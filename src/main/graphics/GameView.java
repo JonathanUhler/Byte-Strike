@@ -10,6 +10,7 @@ import client.ByteStrike;
 import world.Level;
 import entity.Player;
 import entity.Bullet;
+import entity.Ray;
 import item.*;
 import interfaces.Weapon;
 import javax.swing.JPanel;
@@ -343,6 +344,24 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 	}
 
 
+	public boolean isViewable(double tileX, double tileY) {
+		Player me = this.players.get(this.myId);
+		if (me == null)
+			return false;
+		double x = tileX - me.getX();
+		double y = tileY - me.getY();
+		double rad = x < 0 ? Math.atan(y / x) + Math.PI : Math.atan(y / x);
+
+		Ray ray = new Ray(me.getX(), me.getY(), rad);
+		while (!ray.inRange(tileX, tileY)) {
+			if (this.level.collides(ray, ray.getVx(), ray.getVy()))
+				return false;
+			ray.move();
+		}
+		return true;
+	}
+
+
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -375,6 +394,10 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 				int tileXPx = playerPx.x + (int) ((c - pxTile) * tileSize);
 				int tileYPx = playerPx.y + (int) ((r - pyTile) * tileSize);
 				SpriteLoader.drawTile(g, tileType, tileXPx, tileYPx, tileSize);
+				if (!this.isViewable(c, r)) {
+					g.setColor(new Color(0, 0, 0, 30));
+					g.fillRect(tileXPx, tileYPx, tileSize, tileSize);
+				}
 			}
 		}
 
@@ -396,6 +419,8 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 				continue;
 			Player player = this.players.get(playerId);
 			if (player.isDead())
+				continue;
+			if (!this.isViewable(player.getX(), player.getY()))
 				continue;
 			Point pLoc = this.getRelativeLocation(player.getX(), player.getY());
 			int ps = (int) (player.getSize() * tileSize);

@@ -41,7 +41,7 @@ public class Server extends JServer {
 		this.ids = new HashMap<>();
 		this.players = new HashMap<>();
 		this.bullets = new ArrayList<>();
-		this.level = new Level(0);
+		this.level = new Level(2);
 
 		this.animate();
 	}
