@@ -394,7 +394,7 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 				int tileXPx = playerPx.x + (int) ((c - pxTile) * tileSize);
 				int tileYPx = playerPx.y + (int) ((r - pyTile) * tileSize);
 				SpriteLoader.drawTile(g, tileType, tileXPx, tileYPx, tileSize);
-				if (!this.isViewable(c, r)) {
+				if (tileType == Level.Tile.NONE && !this.isViewable(c, r)) {
 					g.setColor(new Color(0, 0, 0, 30));
 					g.fillRect(tileXPx, tileYPx, tileSize, tileSize);
 				}

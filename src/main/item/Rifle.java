@@ -23,7 +23,7 @@ public class Rifle extends Weapon {
 	 * </ul>
 	 */
 	public Rifle() {
-	    super(25, 0.8, 6, 7.0, 0.075, 0.75, 24, 1700);
+	    super(25, 0.8, 6, 7.0, 0.075, 0.85, 24, 1700);
 	}
 
 
