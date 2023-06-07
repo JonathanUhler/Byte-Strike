@@ -23,7 +23,7 @@ public class Sniper extends Weapon {
 	 * </ul>
 	 */
 	public Sniper() {
-	    super(100, 1, 1, 1000.0, 0.300, 0.65, 1, 3000);
+	    super(100, 1, 1, 1000.0, 0.300, 0.70, 1, 3000);
 	}
 
 
