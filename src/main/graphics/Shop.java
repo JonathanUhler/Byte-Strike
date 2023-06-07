@@ -71,9 +71,11 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 
 	    int weaponBoxSize = (weaponAreaW - (weapons.length - 1) * margin) / weapons.length;
 		for (int i = 0; i < weapons.length; i++) {
+			// Get weapon information
 			Weapon weapon = weapons[i];
 			String weaponType = weapon.getType();
 
+			// Display weapon information box
 			int lastHoverX = (int) this.lastMouseHover.getX();
 			int lastHoverY = (int) this.lastMouseHover.getY();
 
@@ -85,9 +87,11 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 			else
 				g.setColor(new Color(247, 245, 228));
 			g.drawRoundRect(boxX, weaponAreaY, weaponBoxSize, weaponBoxSize, 5, 5);
+			// Display weapon information
 			g.drawString(weaponType, boxX + margin / 2, weaponAreaY + titleFontSize / 3);
+			g.drawString("$" +weapon.cost(), boxX + margin / 2, weaponAreaY + 2*titleFontSize/3);
 
-			// Check for purchase
+			// Check for purchase if the box was clicked
 			int lastClickX = (int) this.lastMouseClick.getX();
 			int lastClickY = (int) this.lastMouseClick.getY();
 			if (lastClickX > boxX && lastClickX < boxX + weaponBoxSize &&
