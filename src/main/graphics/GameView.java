@@ -112,6 +112,7 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 		}
 		catch (IOException e) {
 			this.client = null;
+			this.screen.displayMainView();
 			ByteStrike.displayMessage("Connection Error", "Unable to connect to server at " +
 									  ip + ":" + port + ".\n" + e);
 			return;
