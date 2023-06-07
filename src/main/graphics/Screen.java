@@ -62,7 +62,6 @@ public class Screen extends JPanel {
 	/**
 	 * Displays the game view after joining an existing game.
 	 *
-	 * @param gameView  the game view to display.
 	 * @param ip        the IP address to join the game on.
 	 * @param port      the port to join the game on.
 	 */
@@ -74,7 +73,6 @@ public class Screen extends JPanel {
 	/**
 	 * Displays the game view after hosting and/or joining a new game.
 	 *
-	 * @param gameView  the game view to display.
 	 * @param ip        the IP address to host/join the game on.
 	 * @param port      the port to host/join the game on.
 	 * @param hosting   whether a new game should be hosted, or an existing game joined.
