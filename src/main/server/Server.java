@@ -8,6 +8,7 @@ import jnet.Log;
 import entity.Player;
 import entity.Bullet;
 import world.Level;
+import item.*;
 import graphics.Settings;
 import interfaces.Weapon;
 import java.awt.Point;
@@ -41,7 +42,7 @@ public class Server extends JServer {
 		this.ids = new HashMap<>();
 		this.players = new HashMap<>();
 		this.bullets = new ArrayList<>();
-		this.level = new Level(2);
+		this.level = new Level(2); // MARK: map selection
 
 		this.animate();
 	}
@@ -101,6 +102,7 @@ public class Server extends JServer {
 				Map<String, String> cmdDamaged = Communication.cmdDamaged(playerId, dmg);
 				this.sendAll(Communication.serialize(cmdDamaged));
 				if (player.isDead()) {
+					// Reset the killed player
 					Point randomTile = this.getRandomTile();
 					player.setX(randomTile.x);
 					player.setY(randomTile.y);
@@ -109,12 +111,28 @@ public class Server extends JServer {
 																		 randomTile.x,
 																		 randomTile.y);
 					this.sendAll(Communication.serialize(cmdReset));
+
+					// Pay the player that got the kill
+					int attackerId = this.getPlayerIdFromBullet(bullet);
+					Map<String, String> cmdPay = Communication.cmdPay(100, attackerId);
+					this.sendAll(Communication.serialize(cmdPay));
 				}
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+
+	public int getPlayerIdFromBullet(Bullet bullet) {
+		Weapon weapon = bullet.getOriginWeapon();
+		for (int playerId : this.players.keySet()) {
+			Player player = this.players.get(playerId);
+			if (player.getWeapon().equals(weapon))
+				return playerId;
+		}
+		return -1;
 	}
 
 
@@ -196,6 +214,29 @@ public class Server extends JServer {
 				}
 			}
 		    break;
+		}
+		case Communication.OPCODE_BUY: {
+		    String weaponStr = command.get(Communication.KEY_WEAPON);
+			if (weaponStr == null) {
+				Log.stdlog(Log.ERROR, "Server", "No weapon in buy command: " + command);
+				return;
+			}
+			Weapon weapon = null;
+			switch (weaponStr) {
+			case "Rifle" -> weapon = new Rifle();
+			case "Pistol" -> weapon = new Pistol();
+			case "Shotgun" -> weapon = new Shotgun();
+			case "Sniper" -> weapon = new Sniper();
+			default -> {
+				Log.stdlog(Log.ERROR, "Server", "invalid weapon bought: " + weaponStr);
+				return;
+			}
+			}
+
+			boolean bought = player.buy(weapon);
+			if (bought)
+			    this.sendAll(Communication.serialize(command));
+			break;
 		}
 		default:
 			Log.stdlog(Log.ERROR, "Server", "invalid opcode: " + opcode);

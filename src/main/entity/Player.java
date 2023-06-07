@@ -19,6 +19,8 @@ public class Player extends Moveable {
 
 	/** The current health of the player. */
 	private int health;
+	/** The amount of money this player has. */
+	private int money;
 	/** The weapon this player has. */
 	private Weapon weapon;
 	
@@ -36,7 +38,8 @@ public class Player extends Moveable {
 		this.lastWalked = System.currentTimeMillis();
 
 		this.health = 100;
-		this.weapon = new Rifle();
+		this.money = 2500;
+		this.weapon = new Pistol();
 	}
 
 
@@ -61,6 +64,16 @@ public class Player extends Moveable {
 
 
 	/**
+	 * Returns the amount of money this player has.
+	 *
+	 * @return the amount of money this player has.
+	 */
+	public int getMoney() {
+		return this.money;
+	}
+
+
+	/**
 	 * Returns this player's weapon.
 	 *
 	 * @return this player's weapon.
@@ -81,6 +94,46 @@ public class Player extends Moveable {
 
 
 	/**
+	 * Attempts to buy a new weapon and returns the status of the purchase. If the
+	 * weapon was successfully purchased, this method will automatically reduce
+	 * the player's money and set their weapon.
+	 *
+	 * @param weapon  the weapon to buy.
+	 *
+	 * @return whether the weapon was successfully purchased.
+	 */
+	public boolean buy(Weapon weapon) {
+		int cost = weapon.cost();
+		if (cost <= this.money) {
+			this.money -= cost;
+			this.weapon = weapon;
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Gives the player more money.
+	 *
+	 * @param money  the amount of money to give to the player.
+	 */
+	public void pay(int money) {
+		this.money += money;
+	}
+
+
+	/**
+	 * Gives this player a specified weapon.
+	 *
+	 * @param weapon  the weapon to give to this player.
+	 */
+	public void setWeapon(Weapon weapon) {
+		this.weapon = weapon;
+	}
+
+
+	/**
 	 * Resets the player's information, excluding position. The reset consists of
 	 * setting the player's health and {@code lastWalked} information, and zeroing the
 	 * velocity.
@@ -89,6 +142,8 @@ public class Player extends Moveable {
 		this.lastWalked = System.currentTimeMillis();
 
 		this.health = 100;
+		this.money = 250;
+		this.weapon = new Pistol();
 		super.setV(0, 0);
 		super.setRad(0);
 	}

@@ -21,10 +21,11 @@ public class Shotgun extends Weapon {
 	 * <li> Capacity: 2 rounds
 	 * <li> Reload Time: 2.5 seconds
 	 * <li> Bullets Per Shot: 10 bullets
+	 * <li> Cost: $1250.
 	 * </ul>
 	 */
 	public Shotgun() {
-	    super(100, 0.65, 1, 1.5, 0.100, 0.95, 2, 2500, 10);
+	    super(100, 0.65, 1, 1.5, 0.100, 0.95, 2, 2500, 1250, 10);
 	}
 
 

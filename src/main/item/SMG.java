@@ -23,7 +23,7 @@ public class SMG extends Weapon {
 	 * </ul>
 	 */
 	public SMG() {
-	    super(0, 0, 0, 0, 0, 0, 0, 0);
+	    super(0, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 
 

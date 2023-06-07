@@ -20,10 +20,11 @@ public class Sniper extends Weapon {
 	 * <li> Mobility: _% of normal walking speed
 	 * <li> Capacity: _ rounds
 	 * <li> Reload Time: _ seconds
+	 * <li> Cost: $1500
 	 * </ul>
 	 */
 	public Sniper() {
-	    super(100, 1, 1, 1000.0, 0.300, 0.70, 1, 3000);
+	    super(100, 1, 1, 1000.0, 0.300, 0.70, 1, 3000, 1500);
 	}
 
 

@@ -3,6 +3,7 @@ package server;
 
 import entity.Player;
 import entity.Bullet;
+import interfaces.Weapon;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -35,6 +36,10 @@ public class Communication {
 	public static final String OPCODE_DAMAGED = "damaged";
 	/** Value indicating that a player's condition was reset. */
 	public static final String OPCODE_RESET = "reset";
+	/** Value indicating the purchase of a new weapon. */
+	public static final String OPCODE_BUY = "buy";
+	/** Value indicating the gifting of money to a player. */
+	public static final String OPCODE_PAY = "pay";
 	/** Key indicating the type of command sent. */
 	public static final String KEY_OPCODE = "opcode";
 	/** Key indicating whether a player is attempting to move up. */
@@ -59,6 +64,8 @@ public class Communication {
 	public static final String KEY_LEVEL = "level";
 	/** Key indicating a numerical amount of damage. */
 	public static final String KEY_DMG = "dmg";
+	/** Key indicating a numerical amount of money. */
+	public static final String KEY_MONEY = "money";
 
 
 	/**
@@ -438,6 +445,85 @@ public class Communication {
 		map.put(Communication.KEY_ID, Integer.toString(playerId));
 		map.put(Communication.KEY_X, Double.toString(x));
 		map.put(Communication.KEY_Y, Double.toString(y));
+		return map;
+	}
+
+
+	/**
+	 * Generates the payload for a shop purchase command.
+	 * <p>
+	 * This command is comprised of the following components:
+	 * <table style="border: 1px solid black">
+	 *  <caption>{@code color} Command Payload</caption>
+	 *  <tr style="border: 1px solid black">
+	 *   <th style="border: 1px solid black"> Key
+	 *   <th style="border: 1px solid black"> Commentary
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code opcode}
+	 *   <td style="border: 1px solid black"> Identifies this command, always {@code buy}.
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code weapon}
+	 *   <td style="border: 1px solid black"> The string type of the weapon being purchased.
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code id}
+	 *   <td style="border: 1px solid black"> The UID of the player that bought the weapon. This
+	 *                                        field is ignored for client to server communication,
+	 *                                        but is used when the server broadcasts the change
+	 *                                        in weapon to all other clients.
+	 *  </tr>
+	 * </table>
+	 *
+	 * @param weaopn    the weapon purchased.
+	 * @param playerId  the UID of the player buying the weapon.
+	 *
+	 * @return the command payload.
+	 */
+	public static Map<String, String> cmdBuy(Weapon weapon, int playerId) {
+		Map<String, String> map = new HashMap<>();
+		map.put(Communication.KEY_OPCODE, Communication.OPCODE_BUY);
+		map.put(Communication.KEY_WEAPON, weapon.getType());
+		map.put(Communication.KEY_ID, Integer.toString(playerId));
+		return map;
+	}
+
+
+	/**
+	 * Generates the payload for a player payment command.
+	 * <p>
+	 * This command is comprised of the following components:
+	 * <table style="border: 1px solid black">
+	 *  <caption>{@code color} Command Payload</caption>
+	 *  <tr style="border: 1px solid black">
+	 *   <th style="border: 1px solid black"> Key
+	 *   <th style="border: 1px solid black"> Commentary
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code opcode}
+	 *   <td style="border: 1px solid black"> Identifies this command, always {@code pay}.
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code money}
+	 *   <td style="border: 1px solid black"> The amount of money given to the player.
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code id}
+	 *   <td style="border: 1px solid black"> The UID of the player.
+	 *  </tr>
+	 * </table>
+	 *
+	 * @param money     the amount of money given to the player.
+	 * @param playerId  the UID of the player.
+	 *
+	 * @return the command payload.
+	 */
+	public static Map<String, String> cmdPay(int money, int playerId) {
+		Map<String, String> map = new HashMap<>();
+		map.put(Communication.KEY_OPCODE, Communication.OPCODE_PAY);
+		map.put(Communication.KEY_MONEY, Integer.toString(money));
+		map.put(Communication.KEY_ID, Integer.toString(playerId));
 		return map;
 	}
 	

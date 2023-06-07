@@ -46,6 +46,8 @@ public abstract class Weapon {
 	private int capacity;
 	/** The time, in milliseconds, to reload. */
 	private int reloadTime;
+	/** The cost to buy this weapon from the shop. */
+	private int cost;
 	/** The number of bullets created each time {@code fire} is called.. */
 	private int roundsPerShot;
 
@@ -68,6 +70,7 @@ public abstract class Weapon {
 	 *                       in the  interval (0, 1].
 	 * @param capacity       the capacity of this weapon before reloading is required.
 	 * @param reloadTime     the time, in milliseconds, to reload.
+	 * @param cost           the cost to buy this weapon from the shop.
 	 */
 	public Weapon(int damage,
 				  double velocity,
@@ -76,9 +79,10 @@ public abstract class Weapon {
 				  double recoil,
 				  double mobility,
 				  int capacity,
-				  int reloadTime)
+				  int reloadTime,
+				  int cost)
 	{
-		this(damage, velocity, firerate, range, recoil, mobility, capacity, reloadTime, 1);
+		this(damage, velocity, firerate, range, recoil, mobility, capacity, reloadTime, cost, 1);
 	}
 
 
@@ -94,6 +98,7 @@ public abstract class Weapon {
 	 *                       in the  interval (0, 1].
 	 * @param capacity       the capacity of this weapon before reloading is required.
 	 * @param reloadTime     the time, in milliseconds, to reload.
+	 * @param cost           the cost to buy this weapon from the shop.
 	 * @param roundsPerShot  the number of bullets created each time {@code fire} is called.
 	 */
 	public Weapon(int damage,
@@ -104,6 +109,7 @@ public abstract class Weapon {
 				  double mobility,
 				  int capacity,
 				  int reloadTime,
+				  int cost,
 				  int roundsPerShot)
 	{
 		this.damage = damage;
@@ -114,6 +120,7 @@ public abstract class Weapon {
 		this.mobility = mobility;
 		this.capacity = capacity;
 		this.reloadTime = reloadTime;
+		this.cost = cost;
 		this.roundsPerShot = roundsPerShot;
 
 		this.lastFired = 0;
@@ -188,6 +195,16 @@ public abstract class Weapon {
 	 */
 	public int capacity() {
 		return this.capacity;
+	}
+
+
+	/**
+	 * Returns the cost of this weapon.
+	 *
+	 * @return the cost of this weapon.
+	 */
+	public int cost() {
+		return this.cost;
 	}
 
 

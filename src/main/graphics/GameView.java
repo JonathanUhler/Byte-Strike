@@ -24,6 +24,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
@@ -31,7 +33,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-public class GameView extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
+public class GameView extends JPanel implements KeyListener,
+												MouseListener,
+												MouseMotionListener,
+												ActionListener {
 
 	private Screen screen;
 
@@ -47,6 +52,9 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 	private Map<Integer, Player> players;
 	private List<Bullet> bullets;
 	private Level level;
+	
+	private Shop shop;
+	private boolean showShop;
 	
 
 	public GameView(Screen screen) {
@@ -69,6 +77,9 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 		this.players = new HashMap<>();
 		this.bullets = new ArrayList<>();
 		this.level = null;
+		
+		this.shop = null;
+		this.showShop = false;
 	}
 
 
@@ -224,6 +235,9 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 			if (myId == -1) {
 				myId = playerId;
 				this.level = new Level(levelId);
+				this.shop = new Shop();
+				this.shop.addActionListener(this);
+				this.revalidate();
 			}
 			this.players.put(playerId, player);
 			break;
@@ -288,6 +302,64 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 			player.setY(y);
 			player.reset();
 			break;
+		}
+		case Communication.OPCODE_BUY: {
+			int playerId;
+
+			try {
+				playerId = Integer.parseInt(command.get(Communication.KEY_ID));
+			}
+			catch (Exception e) {
+				Log.stdlog(Log.ERROR, "GameView", "Can't parse buy command: " + command + ", " + e);
+				return;
+			}
+
+			Player player = this.players.get(playerId);
+			if (player == null) {
+				Log.stdlog(Log.ERROR, "GameView", "invalid player id: " + playerId);
+				return;
+			}
+
+			String weaponStr = command.get(Communication.KEY_WEAPON);
+			if (weaponStr == null) {
+				Log.stdlog(Log.ERROR, "GameView", "No weapon in buy command: " + command);
+				return;
+			}
+			Weapon weapon = null;
+			switch (weaponStr) {
+			case "Rifle" -> weapon = new Rifle();
+			case "Pistol" -> weapon = new Pistol();
+			case "Shotgun" -> weapon = new Shotgun();
+			case "Sniper" -> weapon = new Sniper();
+			default -> {
+				Log.stdlog(Log.ERROR, "GameView", "invalid weapon bought: " + weaponStr);
+				return;
+			}
+			}
+
+			player.buy(weapon);
+			break;
+		}
+		case Communication.OPCODE_PAY: {
+			int playerId;
+			int money;
+
+			try {
+				playerId = Integer.parseInt(command.get(Communication.KEY_ID));
+				money = Integer.parseInt(command.get(Communication.KEY_MONEY));
+			}
+			catch (Exception e) {
+				Log.stdlog(Log.ERROR, "GameView", "Can't parse buy command: " + command + ", " + e);
+				return;
+			}
+
+			Player player = this.players.get(playerId);
+			if (player == null) {
+				Log.stdlog(Log.ERROR, "GameView", "invalid player id: " + playerId);
+				return;
+			}
+
+			player.pay(money);
 		}
 		default:
 			Log.stdlog(Log.ERROR, "GameView", "invalid opcode: " + opcode);
@@ -366,7 +438,6 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
 		Player me = this.players.get(this.myId);
 		if (me == null)
 			return;
@@ -443,12 +514,25 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 			g.drawRoundRect((int) (tileSize * 0.8) + thickness, tileSize / 2 + thickness,
 							tileSize - thickness * 2, tileSize - thickness * 2, 5, 5);
 		g.drawString("+ " + me.getHealth(), tileSize, (int) (tileSize * 1.4));
+		// Money
+		for (int thickness = 0; thickness < tileSize / 10; thickness++)
+			g.drawRoundRect((int) ((wTiles - 8.2) * tileSize) + thickness, tileSize / 2 + thickness,
+							tileSize - thickness * 2, tileSize - thickness * 2, 5, 5);
+		g.drawString("$ " + me.getMoney(),
+					 (int) ((wTiles - 7.95) * tileSize),
+					 (int) (tileSize * 1.4));
 		// Ammo
 		for (int thickness = 0; thickness < tileSize / 10; thickness++)
 			g.drawRoundRect((int) ((wTiles - 4.1) * tileSize) + thickness, tileSize / 2 + thickness,
 							tileSize - thickness * 2, tileSize - thickness * 2, 5, 5);
 		g.drawString("⁍ " + me.getWeapon().bulletsLeft() + "/" + me.getWeapon().capacity(),
 					 (int) ((wTiles - 3.8) * tileSize), (int) (tileSize * 1.4));
+
+		// Update shop size and position if being shown
+		if (this.showShop) {
+			this.shop.setSize(new Dimension(wPixels / 2, hPixels / 2));
+			this.shop.setLocation(new Point(wPixels / 4, hPixels / 4));
+		}
 	}
 
 
@@ -470,7 +554,6 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 																this.movingRight,
 																this.getPlayerRotation());
 			this.client.send(Communication.serialize(cmdMove));
-
 
 			// Add bullets if shooting
 			if (this.shooting && this.aimingAt != null) {
@@ -535,7 +618,13 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 		case KeyEvent.VK_A -> this.movingLeft = true;
 		case KeyEvent.VK_S -> this.movingDown = true;
 		case KeyEvent.VK_D -> this.movingRight = true;
+		case KeyEvent.VK_B -> this.showShop = !this.showShop;
 		}
+
+		if (this.showShop)
+			this.add(this.shop);
+		else
+			this.remove(this.shop);
 	}
 
 
@@ -601,6 +690,13 @@ public class GameView extends JPanel implements KeyListener, MouseListener, Mous
 		Map<String, String> cmdMove = Communication.cmdMove(false, false, false, false,
 															this.getPlayerRotation());
 		this.client.send(Communication.serialize(cmdMove));
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String commandStr = e.getActionCommand();
+		this.client.send(commandStr);
 	}
 
 }
