@@ -14,8 +14,8 @@ import item.*;
  */
 public class Player extends Moveable {
 
+	/** The last time, as a Unix epoch, that the player walked. Used for walking sounds. */
 	private long lastWalked;
-	
 
 	/** The current health of the player. */
 	private int health;
@@ -109,13 +109,13 @@ public class Player extends Moveable {
 
 
     /**
-	 * Returns the type of this bullet. The type is defined by the following string:
+	 * Returns the type of the player. The type is defined by the following string:
 	 * <p>
 	 * {@code "Player" + weapon.getType()}
 	 * <p>
 	 * For example, {@code "PlayerRifle"} for a rifle.
 	 *
-	 * @return the type of this bullet.
+	 * @return the type of the player.
 	 */
 	@Override
 	public String getType() {

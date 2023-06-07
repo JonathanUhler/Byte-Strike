@@ -16,6 +16,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 
+/**
+ * Displays the main menu of the game.
+ *
+ * @author Jonathan Uhler
+ */
 public class MainView extends JPanel {
 
 	/** Screen that controls this view. */
@@ -29,6 +34,14 @@ public class MainView extends JPanel {
 	private JButton quitButton;
 	
 
+	/**
+	 * Constructs a new {@code MainView}. Upon construction, the {@code MainView} object will
+	 * render its graphical context.
+	 *
+	 * @param screen  the parent {@code Screen} of this view.
+	 *
+	 * @see Screen
+	 */
 	public MainView(Screen screen) {
 		this.setLayout(new GridBagLayout());
 		
@@ -65,6 +78,9 @@ public class MainView extends JPanel {
 	}
 
 
+	/**
+	 * Displays the graphical context of this {@code MainView}.
+	 */
 	public void display() {
 		GridBagConstraints gbc = new GridBagConstraints();
 		

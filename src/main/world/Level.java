@@ -25,7 +25,7 @@ public class Level {
 	}
 
 
-	/** Level choice 0. */
+	/** A map used for testing. */
     public static final String LEVEL_0 =
 		"########\n" +
 		"#      #\n" +
@@ -35,6 +35,7 @@ public class Level {
 		"#      #\n" +
 		"#      #\n" +
 		"########";
+	/** Map choice 1. */
 	public static final String LEVEL_1 =
 		"################################################################\n" +
 		"#####    #######################################################\n" +
@@ -100,6 +101,7 @@ public class Level {
 		"##########           #########        ##########################\n" +
 		"##############################        ##########################\n" +
 		"################################################################";
+	/** Map choice 2. */
 	public static final String LEVEL_2 =
 		"################################################################\n" +
 		"########                 ####             ###        ###########\n" +
@@ -331,7 +333,7 @@ public class Level {
 	 */
 	public int cols(int r) {
 		if (r < 0 || r >= this.level.length)
-			throw new IndexOutOfBoundsException(r + " out of bounds for length" + this.level.length);
+			throw new IndexOutOfBoundsException(r + " out of bounds for len" + this.level.length);
 		return this.level[r].length;
 	}
 

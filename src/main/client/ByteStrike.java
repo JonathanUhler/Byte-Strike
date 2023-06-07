@@ -11,6 +11,11 @@ import java.awt.GridBagLayout;
 import java.awt.Dimension;
 
 
+/**
+ * Main class.
+ *
+ * @author Jonathan Uhler
+ */
 public class ByteStrike {
 
 	/**
@@ -50,6 +55,11 @@ public class ByteStrike {
 	}
 	
 
+	/**
+	 * Runs the program.
+	 *
+	 * @param args  command line arguments.
+	 */
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("Byte Strike");
 		Screen screen = new Screen();
