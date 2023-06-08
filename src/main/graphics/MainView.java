@@ -2,6 +2,7 @@ package graphics;
 
 
 import client.ByteStrike;
+import world.LevelBuilder;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -30,6 +31,8 @@ public class MainView extends JPanel {
 	private JButton hostButton;
 	/** Joins an existing game. */
 	private JButton joinButton;
+	/** Opens the level builder JOptionPane. */
+	private JButton levelBuilderButton;
 	/** Quits the game. */
 	private JButton quitButton;
 	
@@ -50,10 +53,12 @@ public class MainView extends JPanel {
 		this.hostButton = new JButton("Host Game");
 		this.joinButton = new JButton("Join Game");
 		this.quitButton = new JButton("Quit Game");
+		this.levelBuilderButton = new JButton("Level Builder");
 
 		this.hostButton.addActionListener(e -> this.hostAction());
 		this.joinButton.addActionListener(e -> this.joinAction());
 		this.quitButton.addActionListener(e -> this.quitAction());
+		this.levelBuilderButton.addActionListener(e -> this.levelBuilderAction());
 
 		this.redraw();
 	}
@@ -95,6 +100,9 @@ public class MainView extends JPanel {
 
 		gbc.gridy++;
 		this.add(this.joinButton, gbc);
+
+		gbc.gridy++;
+		this.add(this.levelBuilderButton, gbc);
 
 		gbc.gridy++;
 		this.add(this.quitButton, gbc);
@@ -159,6 +167,14 @@ public class MainView extends JPanel {
 		int port = (Integer) connectionInfo[1];
 
 		this.screen.displayGameView(ip, port);
+	}
+
+
+	/**
+	 * The action performed by the {@code levelBuilderButton} button;
+	 */
+	private void levelBuilderAction() {
+		LevelBuilder.create();
 	}
 
 
