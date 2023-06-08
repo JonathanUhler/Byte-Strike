@@ -476,7 +476,7 @@ public class Communication {
 	 *  </tr>
 	 * </table>
 	 *
-	 * @param weaopn    the weapon purchased.
+	 * @param weapon    the weapon purchased.
 	 * @param playerId  the UID of the player buying the weapon.
 	 *
 	 * @return the command payload.

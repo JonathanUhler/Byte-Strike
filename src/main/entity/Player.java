@@ -96,13 +96,17 @@ public class Player extends Moveable {
 	/**
 	 * Attempts to buy a new weapon and returns the status of the purchase. If the
 	 * weapon was successfully purchased, this method will automatically reduce
-	 * the player's money and set their weapon.
+	 * the player's money and set their weapon. This method prevents buying the same
+	 * weapon that the player already has.
 	 *
 	 * @param weapon  the weapon to buy.
 	 *
 	 * @return whether the weapon was successfully purchased.
 	 */
 	public boolean buy(Weapon weapon) {
+		if (weapon.getType().equals(this.weapon.getType()))
+			return false;
+		
 		int cost = weapon.cost();
 		if (cost <= this.money) {
 			this.money -= cost;
