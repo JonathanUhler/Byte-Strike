@@ -42,7 +42,7 @@ public class Server extends JServer {
 		this.ids = new HashMap<>();
 		this.players = new HashMap<>();
 		this.bullets = new ArrayList<>();
-		this.level = new Level(2); // MARK: map selection
+		this.level = new Level(1); // MARK: map selection
 
 		this.animate();
 	}
