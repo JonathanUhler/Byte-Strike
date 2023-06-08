@@ -212,6 +212,9 @@ public class GameView extends JPanel implements KeyListener,
 			Weapon weapon = player.getWeapon();
 			Bullet bullet = new Bullet(x, y, rad, weapon);
 			this.bullets.add(bullet);
+			// Fire weapon on client side if this is my player to play the proper sounds
+			if (playerId == this.myId)
+				weapon.fire(0, 0, 0);
 			break;
 		}
 		case Communication.OPCODE_JOIN: {
@@ -560,7 +563,6 @@ public class GameView extends JPanel implements KeyListener,
 			if (this.shooting && this.aimingAt != null) {
 				Map<String, String> cmdShoot = Communication.cmdShoot();
 				this.client.send(Communication.serialize(cmdShoot));
-				this.players.get(this.myId).getWeapon().fire(0, 0, 0);
 			}
 
 			// Update bullets
