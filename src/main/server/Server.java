@@ -114,6 +114,7 @@ public class Server extends JServer {
 
 					// Pay the player that got the kill
 					int attackerId = this.getPlayerIdFromBullet(bullet);
+					this.players.get(attackerId).pay(100);
 					Map<String, String> cmdPay = Communication.cmdPay(100, attackerId);
 					this.sendAll(Communication.serialize(cmdPay));
 				}

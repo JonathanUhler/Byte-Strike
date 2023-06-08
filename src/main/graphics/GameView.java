@@ -360,6 +360,7 @@ public class GameView extends JPanel implements KeyListener,
 			}
 
 			player.pay(money);
+			break;
 		}
 		default:
 			Log.stdlog(Log.ERROR, "GameView", "invalid opcode: " + opcode);
