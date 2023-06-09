@@ -12,19 +12,21 @@ public class Sniper extends Weapon {
 	/**
 	 * Constructs a new {@code Sniper} object. This weapon has the following properties:
 	 * <ul>
-	 * <li> Damage: _ hp
-	 * <li> Velocity: _ tile/frame
-	 * <li> Firerate: _ rounds/second
-	 * <li> Range: 1000.0 tiles
-	 * <li> Recoil _ radians (about _ degrees)
-	 * <li> Mobility: _% of normal walking speed
-	 * <li> Capacity: _ rounds
-	 * <li> Reload Time: _ seconds
-	 * <li> Cost: $1500
+	 * <li> Damage: 115 hp
+	 * <li> Velocity: 0.90 tiles/frame
+	 * <li> Penetration: 100% base damage against armor
+	 * <li> Firerate: 1 round/second
+	 * <li> Range: infinite tiles
+	 * <li> Recoil 0.300 radians
+	 * <li> Mobility: 70% of normal walking speed
+	 * <li> Capacity: 1 round
+	 * <li> Reload Time: 3.7 seconds
+	 * <li> Cost: $2500
+	 * <li> $/Kill: $25
 	 * </ul>
 	 */
 	public Sniper() {
-	    super(100, 1, 1, 1000.0, 0.300, 0.70, 1, 3000, 1500);
+		super(115, 0.90, 1, 1000.0, 0.300, 0.70, 1, 3700, 2500, 25);
 	}
 
 

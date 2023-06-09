@@ -31,16 +31,15 @@ public abstract class Weapon {
 	private int damage;
 	/** The velocity of projectiles fired by this weapon, in tiles per second. */
 	private double velocity;
+	/** The effectiveness of this weapon against a player with armor. */
+	private double penetration;
 	/** The rate of fire, in rounds per second. */
 	private int firerate;
 	/** The effective range of this weapon in tiles. */
 	private double range;
 	/** The maximum recoil angle in radians. */
 	private double recoil;
-	/** 
-	 * The movement speed multiplier of the player while carrying this weapon in the 
-	 * interval (0, 1].
-	 */
+	/**  The movement speed multiplier of the player while carrying this weapon from 0-1. */
 	private double mobility;
 	/** The capacity of this weapon before reloading is required. */
 	private int capacity;
@@ -48,7 +47,9 @@ public abstract class Weapon {
 	private int reloadTime;
 	/** The cost to buy this weapon from the shop. */
 	private int cost;
-	/** The number of bullets created each time {@code fire} is called.. */
+	/** The amount of money awarded to the attacking player using this weapon. .*/
+	private int moneyPerKill;
+	/** The number of bullets created each time {@code fire} is called. */
 	private int roundsPerShot;
 
 	// Usage information
@@ -61,16 +62,17 @@ public abstract class Weapon {
 	/**
 	 * Constructs a new {@code Weapon} object with 1 round per shot.
 	 *
-	 * @param damage         the damage dealt by one projectiles from this weapon, in terms of HP.
-	 * @param velocity       the velocity of a projectile, in tiles/sec.
-	 * @param firerate       the rate of fire, in rounds per second.
-	 * @param range          the effective range of this weapon in tiles.
-	 * @param recoil         the maximum recoil angle in radians.
-	 * @param mobility       the movement speed multiplier of the player while carrying this weapon 
-	 *                       in the  interval (0, 1].
-	 * @param capacity       the capacity of this weapon before reloading is required.
-	 * @param reloadTime     the time, in milliseconds, to reload.
-	 * @param cost           the cost to buy this weapon from the shop.
+	 * @param damage        the damage dealt by one projectiles from this weapon, in terms of HP.
+	 * @param velocity      the velocity of a projectile, in tiles/sec.
+	 * @param firerate      the rate of fire, in rounds per second.
+	 * @param range         the effective range of this weapon in tiles.
+	 * @param recoil        the maximum recoil angle in radians.
+	 * @param mobility      the movement speed multiplier of the player while carrying this weapon 
+	 *                      in the  interval (0, 1].
+	 * @param capacity      the capacity of this weapon before reloading is required.
+	 * @param reloadTime    the time, in milliseconds, to reload.
+	 * @param cost          the cost to buy this weapon from the shop.
+	 * @param moneyPerKill  the amount of money earned by the attacking player using this weapon.
 	 */
 	public Weapon(int damage,
 				  double velocity,
@@ -80,9 +82,20 @@ public abstract class Weapon {
 				  double mobility,
 				  int capacity,
 				  int reloadTime,
-				  int cost)
+				  int cost,
+				  int moneyPerKill)
 	{
-		this(damage, velocity, firerate, range, recoil, mobility, capacity, reloadTime, cost, 1);
+		this(damage,
+			 velocity,
+			 firerate,
+			 range,
+			 recoil,
+			 mobility,
+			 capacity,
+			 reloadTime,
+			 cost,
+			 moneyPerKill,
+			 1);
 	}
 
 
@@ -99,6 +112,7 @@ public abstract class Weapon {
 	 * @param capacity       the capacity of this weapon before reloading is required.
 	 * @param reloadTime     the time, in milliseconds, to reload.
 	 * @param cost           the cost to buy this weapon from the shop.
+	 * @param moneyPerKill   the amount of money earned by the attacking player using this weapon.
 	 * @param roundsPerShot  the number of bullets created each time {@code fire} is called.
 	 */
 	public Weapon(int damage,
@@ -110,10 +124,12 @@ public abstract class Weapon {
 				  int capacity,
 				  int reloadTime,
 				  int cost,
+				  int moneyPerKill,
 				  int roundsPerShot)
 	{
 		this.damage = damage;
 		this.velocity = velocity;
+		this.penetration = velocity + 0.1;
 		this.firerate = firerate;
 		this.range = range;
 		this.recoil = recoil;
@@ -121,6 +137,7 @@ public abstract class Weapon {
 		this.capacity = capacity;
 		this.reloadTime = reloadTime;
 		this.cost = cost;
+		this.moneyPerKill = moneyPerKill;
 		this.roundsPerShot = roundsPerShot;
 
 		this.lastFired = 0;
@@ -145,6 +162,19 @@ public abstract class Weapon {
 	 */
 	public double velocity() {
 		return this.velocity;
+	}
+
+
+	/**
+	 * Returns the effectiveness of this weapon against a player in armor. Penetration is
+	 * a linear function of velocity in the interval {@code [0, 1]} where {@code 0} represents
+	 * complete ineffectiveness against armor (no damage) and {@code 1} represents total
+	 * effectiveness against armor (full damage).
+	 *
+	 * @return the penetration of bullets fired by this weapon.
+	 */
+	public double penetration() {
+		return this.penetration;
 	}
 
 
@@ -205,6 +235,16 @@ public abstract class Weapon {
 	 */
 	public int cost() {
 		return this.cost;
+	}
+
+
+	/**
+	 * Returns the money per kill of this weapon.
+	 *
+	 * @return the money per kill of this weapon.
+	 */
+	public int moneyPerKill() {
+		return this.moneyPerKill;
 	}
 
 

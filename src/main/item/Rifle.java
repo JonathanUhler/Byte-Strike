@@ -12,19 +12,21 @@ public class Rifle extends Weapon {
 	/**
 	 * Constructs a new {@code Rifle} object. This weapon has the following properties:
 	 * <ul>
-	 * <li> Damage: 25 hp
-	 * <li> Velocity: 0.8 tile/frame (about 16 m/s in real life)
-	 * <li> Firerate: 6 rounds/second
+	 * <li> Damage: 31 hp
+	 * <li> Velocity: 0.60 tiles/frame
+	 * <li> Penetration: 70% base damage against armor
+	 * <li> Firerate: 11 rounds/second
 	 * <li> Range: 7 tiles
-	 * <li> Recoil 0.075 radians (about 4.3 degrees)
-	 * <li> Mobility: 85% of normal walking speed
-	 * <li> Capacity: 24 rounds
-	 * <li> Reload Time: 1.7 seconds
-	 * <li> Cost: $750.
+	 * <li> Recoil 0.075 radians
+	 * <li> Mobility: 80% of normal walking speed
+	 * <li> Capacity: 30 rounds
+	 * <li> Reload Time: 3.1 seconds
+	 * <li> Cost: $1300
+	 * <li> $/Kill: $100
 	 * </ul>
 	 */
 	public Rifle() {
-	    super(25, 0.8, 6, 7.0, 0.075, 0.85, 24, 1700, 750);
+	    super(25, 0.60, 11, 7.0, 0.075, 0.80, 30, 3100, 1300, 100);
 	}
 
 

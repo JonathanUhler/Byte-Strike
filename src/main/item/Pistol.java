@@ -12,19 +12,21 @@ public class Pistol extends Weapon {
 	/**
 	 * Constructs a new {@code Pistol} object. This weapon has the following properties:
 	 * <ul>
-	 * <li> Damage: 10 hp
-	 * <li> Velocity: 0.5 tile/frame
-	 * <li> Firerate: 4 rounds/second
-	 * <li> Range: 4 tiles
-	 * <li> Recoil 0.060 radians (about 3.4 degrees)
+	 * <li> Damage: 24 hp
+	 * <li> Velocity: 0.42 tiles/frame
+	 * <li> Penetration: 52% base damage against armor
+	 * <li> Firerate: 6 rounds/second
+	 * <li> Range: 5 tiles
+	 * <li> Recoil 0.060 radians
 	 * <li> Mobility: 95% of normal walking speed
 	 * <li> Capacity: 12 rounds
-	 * <li> Reload Time: 1.4 seconds
-	 * <li> Cost: $100.
+	 * <li> Reload Time: 2.3 seconds
+	 * <li> Cost: $100
+	 * <li> $/Kill: $75
 	 * </ul>
 	 */
 	public Pistol() {
-	    super(10, 0.5, 4, 4.0, 0.060, 0.95, 12, 1400, 100);
+	    super(24, 0.42, 6, 5, 0.060, 0.95, 20, 2300, 100, 75);
 	}
 
 

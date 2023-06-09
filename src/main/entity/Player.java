@@ -38,7 +38,7 @@ public class Player extends Moveable {
 		this.lastWalked = System.currentTimeMillis();
 
 		this.health = 100;
-		this.money = 250;
+		this.money = 100;
 		this.weapon = new Pistol();
 	}
 

@@ -52,6 +52,8 @@ public class Communication {
 	public static final String KEY_RIGHT = "right";
 	/** Key indicating the UID of a player. */
 	public static final String KEY_ID = "id";
+	/** Key indicating the bullet number in a sequence of bullets fired by the same weapon. */
+	public static final String KEY_BULLET_NUM = "bullet_num";
 	/** Key indicating the x position of an entity. */
 	public static final String KEY_X = "x";
 	/** Key indicating the y position of an entity. */
@@ -239,12 +241,6 @@ public class Communication {
 	 *   <td style="border: 1px solid black"> Identifies this command, always {@code pos_bullet}.
 	 *  </tr>
 	 *  <tr style="border: 1px solid black">
-	 *   <td style="border: 1px solid black"> {@code id}
-	 *   <td style="border: 1px solid black"> The UID of the player that fired the bullet. This
-	 *                                        can be used by the client to determine the weapon
-	 *                                        type and other information.
-	 *  </tr>
-	 *  <tr style="border: 1px solid black">
 	 *   <td style="border: 1px solid black"> {@code x}
 	 *   <td style="border: 1px solid black"> The x position of the bullet.
 	 *  </tr>
@@ -257,14 +253,27 @@ public class Communication {
 	 *   <td style="border: 1px solid black"> The rotation, in radians on the unit circle, of the
 	 *                                        bullet.
 	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code bullet_num}
+	 *   <td style="border: 1px solid black"> The number of the bullet in a sequence of multiple
+	 *                                        bullets fired by the same weapon, starting at 0.
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code id}
+	 *   <td style="border: 1px solid black"> The UID of the player that fired the bullet. This
+	 *                                        can be used by the client to determine the weapon
+	 *                                        type and other information.
+	 *  </tr>
 	 * </table>
 	 *
 	 * @param bullet    the bullet object that was created.
+	 * @param bulletId  the number of the bullet in a sequence of multiple bullets fired by the
+	 *                  same weapon.
 	 * @param playerId  the UID of the player that fired the bullet.
 	 *
 	 * @return the command payload.
 	 */
-	public static Map<String, String> cmdNewBullet(Bullet bullet, int playerId) {
+	public static Map<String, String> cmdNewBullet(Bullet bullet, int bulletId, int playerId) {
 		if (bullet == null)
 			return null;
 		
@@ -273,6 +282,7 @@ public class Communication {
 		map.put(Communication.KEY_X, Double.toString(bullet.getX()));
 		map.put(Communication.KEY_Y, Double.toString(bullet.getY()));
 		map.put(Communication.KEY_RAD, Double.toString(bullet.getRad()));
+		map.put(Communication.KEY_BULLET_NUM, Integer.toString(bulletId));
 		map.put(Communication.KEY_ID, Integer.toString(playerId));
 		return map;
 	}

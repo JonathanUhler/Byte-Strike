@@ -190,12 +190,14 @@ public class GameView extends JPanel implements KeyListener,
 			double x;
 			double y;
 			double rad;
+			int bulletId;
 			int playerId;
 
 			try {
 				x = Double.parseDouble(command.get(Communication.KEY_X));
 				y = Double.parseDouble(command.get(Communication.KEY_Y));
 				rad = Double.parseDouble(command.get(Communication.KEY_RAD));
+				bulletId = Integer.parseInt(command.get(Communication.KEY_BULLET_NUM));
 				playerId = Integer.parseInt(command.get(Communication.KEY_ID));
 			}
 			catch (Exception e) {
@@ -213,7 +215,9 @@ public class GameView extends JPanel implements KeyListener,
 			Bullet bullet = new Bullet(x, y, rad, weapon);
 			this.bullets.add(bullet);
 			// Fire weapon on client side if this is my player to play the proper sounds
-			if (playerId == this.myId) {
+			// Check bullet id to avoid firing the weapon multiple times for weapons that
+			// use multiple bullets per shot (e.g. shotguns).
+			if (playerId == this.myId && bulletId == 0) {
 				weapon.fireBlank();
 			}
 			break;

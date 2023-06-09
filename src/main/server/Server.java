@@ -79,6 +79,7 @@ public class Server extends JServer {
 
 
 	private boolean checkPlayerCollision(Bullet bullet) {
+		Weapon weapon = bullet.getOriginWeapon();
 		double bulletX = bullet.getX();
 		double bulletY = bullet.getY();
 		double bulletS = bullet.getSize();
@@ -114,8 +115,9 @@ public class Server extends JServer {
 
 					// Pay the player that got the kill
 					int attackerId = this.getPlayerIdFromBullet(bullet);
-					this.players.get(attackerId).pay(100);
-					Map<String, String> cmdPay = Communication.cmdPay(100, attackerId);
+					int moneyEarned = weapon.moneyPerKill();
+					this.players.get(attackerId).pay(moneyEarned);
+					Map<String, String> cmdPay = Communication.cmdPay(moneyEarned, attackerId);
 					this.sendAll(Communication.serialize(cmdPay));
 				}
 				return true;
@@ -208,9 +210,12 @@ public class Server extends JServer {
 		    Weapon weapon = player.getWeapon();
 			Bullet[] bulletsFired = weapon.fire(player.getX(), player.getY(), player.getRad());
 			if (bulletsFired != null) {
-				for (Bullet bullet : bulletsFired) {
+				for (int bulletId = 0; bulletId < bulletsFired.length; bulletId++) {
+					Bullet bullet = bulletsFired[bulletId];
 					this.bullets.add(bullet);
-					Map<String, String> cmdNewBullet = Communication.cmdNewBullet(bullet, playerId);
+					Map<String, String> cmdNewBullet = Communication.cmdNewBullet(bullet,
+																				  bulletId,
+																				  playerId);
 					this.sendAll(Communication.serialize(cmdNewBullet));
 				}
 			}
@@ -299,7 +304,7 @@ public class Server extends JServer {
 			}
 
 			// Send the bullet update command
-			Map<String, String> update = Communication.cmdNewBullet(existingBullet, attackingId);
+			Map<String, String> update = Communication.cmdNewBullet(existingBullet, 1, attackingId);
 			this.send(Communication.serialize(update), clientSocket);
 		}
 	}

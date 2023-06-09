@@ -12,18 +12,21 @@ public class SMG extends Weapon {
 	/**
 	 * Constructs a new {@code SMG} object. This weapon has the following properties:
 	 * <ul>
-	 * <li> Damage: _ hp
-	 * <li> Velocity: _ tile/frame
-	 * <li> Firerate: _ rounds/second
-	 * <li> Range: _ tiles
-	 * <li> Recoil _ radians (about _ degrees)
-	 * <li> Mobility: _% of normal walking speed
-	 * <li> Capacity: _ rounds
-	 * <li> Reload Time: _ seconds
+	 * <li> Damage: 25 hp
+	 * <li> Velocity: 0.40 tiles/frame
+	 * <li> Penetration: 50% base damage against armor
+	 * <li> Firerate: 13 rounds/second
+	 * <li> Range: 4 tiles
+	 * <li> Recoil 0.070 radians
+	 * <li> Mobility: 90% of normal walking speed
+	 * <li> Capacity: 30 rounds
+	 * <li> Reload Time: 2.6 seconds
+	 * <li> Cost: $700
+	 * <li> $/Kill: $150
 	 * </ul>
 	 */
 	public SMG() {
-	    super(0, 0, 0, 0, 0, 0, 0, 0, 0);
+	    super(25, 0.40, 13, 4, 0.070, 0.90, 30, 2600, 700, 150);
 	}
 
 
