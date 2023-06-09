@@ -213,8 +213,9 @@ public class GameView extends JPanel implements KeyListener,
 			Bullet bullet = new Bullet(x, y, rad, weapon);
 			this.bullets.add(bullet);
 			// Fire weapon on client side if this is my player to play the proper sounds
-			if (playerId == this.myId)
-				weapon.fire(0, 0, 0);
+			if (playerId == this.myId) {
+				weapon.fireBlank();
+			}
 			break;
 		}
 		case Communication.OPCODE_JOIN: {

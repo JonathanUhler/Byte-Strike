@@ -235,8 +235,10 @@ public class Server extends JServer {
 			}
 
 			boolean bought = player.buy(weapon);
-			if (bought)
-			    this.sendAll(Communication.serialize(command));
+			if (bought) {
+				Map<String, String> updateBuy = Communication.cmdBuy(weapon, playerId);
+			    this.sendAll(Communication.serialize(updateBuy));
+			}
 			break;
 		}
 		default:

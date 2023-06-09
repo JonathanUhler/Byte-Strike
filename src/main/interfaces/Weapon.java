@@ -369,10 +369,23 @@ public abstract class Weapon {
 		}
 		this.lastFired = System.currentTimeMillis();
 		this.bulletsLeft--;
+		SoundManager.playSound("shoot");
 		if (this.reloading())
 			this.reload();
-		SoundManager.playSound("shoot");
 		return bullets;
+	}
+
+
+	/**
+	 * Completes the client-side routine of firing this weapon. This includes decrementing
+	 * the number of bullets left, playing the weapon fired sound, and performing
+	 * the reload routine if needed. This method does not create a bullet.
+	 */
+	public void fireBlank() {
+		this.bulletsLeft--;
+		SoundManager.playSound("shoot");
+		if (this.reloading())
+			this.reload();
 	}
 
 
