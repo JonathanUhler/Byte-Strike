@@ -136,6 +136,29 @@ public class SpriteLoader {
 
 
 	/**
+	 * Draws an arbitrary sprite. If the sprite cannot be loaded, the missing sprite texture is 
+	 * drawn. The specified type can be any sprite in the {@code assets/sprites} folder.
+	 *
+	 * @param g         the {@code Graphics} object to draw the tile on.
+	 * @param type      the path, after {@code assets/sprites} to the sprite file. This path
+	 *                  does <b>not</b> include a leading slash or a file extension.
+	 * @param xPx       the x position of the top-left corner of the sprite.
+	 * @param yPx       the y position of the top-left corner of the sprite.
+	 * @param size      the size to draw the sprite.
+	 *
+	 * @throws NullPointerException  if {@code g == null}.
+	 * @throws NullPointerException  if {@code type == null}.
+	 */
+	public static void draw(Graphics g, String type, int xPx, int yPx, int size) {
+		if (g == null)
+			throw new NullPointerException("g was null");
+		if (type == null)
+			throw new NullPointerException("type was null");
+		g.drawImage(SpriteLoader.loadImage(type, size), xPx, yPx, null);
+	}
+
+
+	/**
 	 * Draws a tile. If the sprite cannot be loaded, the missing sprite texture is drawn.
 	 *
 	 * @param g         the {@code Graphics} object to draw the tile on.

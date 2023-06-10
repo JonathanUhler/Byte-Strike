@@ -51,7 +51,7 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 		Weapon[] weapons = {new Pistol(), new SMG(), new Rifle(), new Shotgun(), new Sniper()};
 
 		// Background
-		g.setColor(new Color(0, 0, 0, 175));
+		g.setColor(new Color(0, 0, 0, 150));
 		g.fillRoundRect(0, 0, w, h, 15, 15);
 
 		// Shop title
@@ -90,6 +90,8 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 			// Display weapon information
 			g.drawString(weaponType, boxX + margin / 2, weaponAreaY + titleFontSize / 3);
 			g.drawString("$" +weapon.cost(), boxX + margin / 2, weaponAreaY + 2*titleFontSize/3);
+			SpriteLoader.draw(g, "Shop/Shop" + weaponType,
+							  boxX, weaponAreaY + margin, weaponBoxSize);
 
 			// Check for purchase if the box was clicked
 			int lastClickX = (int) this.lastMouseClick.getX();

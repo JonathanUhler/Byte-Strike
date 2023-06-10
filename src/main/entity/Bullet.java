@@ -30,7 +30,7 @@ public class Bullet extends Moveable {
 	 *                the velocity and other information about the projectile.
 	 */
 	public Bullet(double x, double y, double rad, Weapon origin) {
-	    super(x, y, 0.15);
+	    super(x, y, 0.1);
 
 		double vx = origin.velocity() * Math.cos(rad);
 		double vy = origin.velocity() * Math.sin(rad);
