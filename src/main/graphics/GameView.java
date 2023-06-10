@@ -445,12 +445,19 @@ public class GameView extends JPanel implements KeyListener,
 	}
 
 
+	private void drawThickRoundRect(Graphics g, int x, int y, int size) {
+		for (int t = 0; t < size / 10; t++)
+			g.drawRoundRect(x + t, y + t, size - 2 * t, size - 2 * t, 5, 5);
+	}
+
+
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Player me = this.players.get(this.myId);
 		if (me == null)
 			return;
+		Weapon myWeapon = me.getWeapon();
 		
 	    int tileSize = this.getTileSize();
 		int wPixels = this.getSize().width;
@@ -518,23 +525,30 @@ public class GameView extends JPanel implements KeyListener,
 		// Health
 		g.setColor(new Color(113, 180, 209));
 		g.setFont(new Font("Arial", Font.BOLD, tileSize));
-		for (int thickness = 0; thickness < tileSize / 10; thickness++)
-			g.drawRoundRect((int) (tileSize * 0.8) + thickness, tileSize / 2 + thickness,
-							tileSize - thickness * 2, tileSize - thickness * 2, 5, 5);
-		g.drawString("+ " + me.getHealth(), tileSize, (int) (tileSize * 1.4));
-		// Money
-		for (int thickness = 0; thickness < tileSize / 10; thickness++)
-			g.drawRoundRect((int) ((wTiles - 8.2) * tileSize) + thickness, tileSize / 2 + thickness,
-							tileSize - thickness * 2, tileSize - thickness * 2, 5, 5);
-		g.drawString("$ " + me.getMoney(),
-					 (int) ((wTiles - 7.95) * tileSize),
-					 (int) (tileSize * 1.4));
+		this.drawThickRoundRect(g, tileSize / 2, tileSize / 2, tileSize);
+		g.drawString("+ " + me.getHealth(), (int) (tileSize * 0.75), (int) (tileSize * 1.35));
 		// Ammo
-		for (int thickness = 0; thickness < tileSize / 10; thickness++)
-			g.drawRoundRect((int) ((wTiles - 4.1) * tileSize) + thickness, tileSize / 2 + thickness,
-							tileSize - thickness * 2, tileSize - thickness * 2, 5, 5);
+		this.drawThickRoundRect(g, 4 * tileSize, tileSize / 2, tileSize);
 		g.drawString("⁍ " + me.getWeapon().bulletsLeft() + "/" + me.getWeapon().capacity(),
-					 (int) ((wTiles - 3.8) * tileSize), (int) (tileSize * 1.4));
+					 (int) (tileSize * 4.25), (int) (tileSize * 1.35));
+		// Money
+		this.drawThickRoundRect(g, (int) ((wTiles - 3.25) * tileSize), tileSize / 2, tileSize);
+		g.drawString("$ " + me.getMoney(),
+					 (int) ((wTiles - 3) * tileSize),
+					 (int) (tileSize * 1.35));
+		// Items
+		g.setFont(new Font("Arial", Font.BOLD, tileSize / 4));
+		// Primary weapon
+		g.drawString("Weapon", (int) (10 * tileSize), (int) (tileSize * 0.4));
+		this.drawThickRoundRect(g, (int) (10 * tileSize), tileSize / 2, tileSize);
+		SpriteLoader.draw(g, "Shop/Shop" + myWeapon.getType(),
+						  (int) (10 * tileSize), tileSize / 2, tileSize);
+		// Use item 1
+		g.drawString("Use Item 1", (int) (11.5 * tileSize), (int) (tileSize * 0.4));
+		this.drawThickRoundRect(g, (int) (11.5 * tileSize), tileSize / 2, tileSize);
+		// Use item 2
+		g.drawString("Use Item 2", (int) (13 * tileSize), (int) (tileSize * 0.4));
+		this.drawThickRoundRect(g, (int) (13 * tileSize), tileSize / 2, tileSize);
 
 		// Update shop size and position if being shown
 		if (this.showShop) {
