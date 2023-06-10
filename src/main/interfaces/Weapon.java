@@ -43,14 +43,16 @@ public abstract class Weapon {
 	private double mobility;
 	/** The capacity of this weapon before reloading is required. */
 	private int capacity;
+	/** The number of bullets created each time {@code fire} is called. */
+	private int roundsPerShot;
 	/** The time, in milliseconds, to reload. */
 	private int reloadTime;
 	/** The cost to buy this weapon from the shop. */
 	private int cost;
 	/** The amount of money awarded to the attacking player using this weapon. .*/
 	private int moneyPerKill;
-	/** The number of bullets created each time {@code fire} is called. */
-	private int roundsPerShot;
+	/** The length, in tiles, of the barrel. Used to determine bullet position. */
+	private double barrelLength;
 
 	// Usage information
 	/** The unix epoch time when the weapon was last used. */
@@ -73,6 +75,7 @@ public abstract class Weapon {
 	 * @param reloadTime    the time, in milliseconds, to reload.
 	 * @param cost          the cost to buy this weapon from the shop.
 	 * @param moneyPerKill  the amount of money earned by the attacking player using this weapon.
+	 * @param barrelLength  the length, in tiles, of the barrel. Used to determine bullet pos.
 	 */
 	public Weapon(int damage,
 				  double velocity,
@@ -83,7 +86,8 @@ public abstract class Weapon {
 				  int capacity,
 				  int reloadTime,
 				  int cost,
-				  int moneyPerKill)
+				  int moneyPerKill,
+				  double barrelLength)
 	{
 		this(damage,
 			 velocity,
@@ -92,10 +96,11 @@ public abstract class Weapon {
 			 recoil,
 			 mobility,
 			 capacity,
+			 1,
 			 reloadTime,
 			 cost,
 			 moneyPerKill,
-			 1);
+			 barrelLength);
 	}
 
 
@@ -110,10 +115,11 @@ public abstract class Weapon {
 	 * @param mobility       the movement speed multiplier of the player while carrying this weapon 
 	 *                       in the  interval (0, 1].
 	 * @param capacity       the capacity of this weapon before reloading is required.
+	 * @param roundsPerShot  the number of bullets created each time {@code fire} is called.
 	 * @param reloadTime     the time, in milliseconds, to reload.
 	 * @param cost           the cost to buy this weapon from the shop.
 	 * @param moneyPerKill   the amount of money earned by the attacking player using this weapon.
-	 * @param roundsPerShot  the number of bullets created each time {@code fire} is called.
+	 * @param barrelLength  the length, in tiles, of the barrel. Used to determine bullet pos.
 	 */
 	public Weapon(int damage,
 				  double velocity,
@@ -122,10 +128,11 @@ public abstract class Weapon {
 				  double recoil,
 				  double mobility,
 				  int capacity,
+				  int roundsPerShot,
 				  int reloadTime,
 				  int cost,
 				  int moneyPerKill,
-				  int roundsPerShot)
+				  double barrelLength)
 	{
 		this.damage = damage;
 		this.velocity = velocity;
@@ -135,10 +142,11 @@ public abstract class Weapon {
 		this.recoil = recoil;
 		this.mobility = mobility;
 		this.capacity = capacity;
+		this.roundsPerShot = roundsPerShot;
 		this.reloadTime = reloadTime;
 		this.cost = cost;
 		this.moneyPerKill = moneyPerKill;
-		this.roundsPerShot = roundsPerShot;
+		this.barrelLength = barrelLength;
 
 		this.lastFired = 0;
 		this.bulletsLeft = this.capacity;
@@ -320,7 +328,7 @@ public abstract class Weapon {
 	 * @return the x offset of the bullet.
 	 */
 	private double getMuzzleXOffset(double rad) {
-		return 0.434139 * Math.sin(rad + 2.098872) + 0.4375;
+		return (0.5 + this.barrelLength) * Math.sin(-rad + Math.PI / 2) + 0.35;
 	}
 
 
@@ -335,7 +343,7 @@ public abstract class Weapon {
 	 * @return the y offset of the bullet.
 	 */
 	private double getMuzzleYOffset(double rad) {
-		return 0.431453 * Math.sin(1.01676 * rad + 0.464056) + 0.431891;
+		return (0.5 + this.barrelLength) * Math.sin(-rad + Math.PI) + 0.35;
 	}
 
 
@@ -409,7 +417,6 @@ public abstract class Weapon {
 		}
 		this.lastFired = System.currentTimeMillis();
 		this.bulletsLeft--;
-		SoundManager.playSound("shoot");
 		if (this.reloading())
 			this.reload();
 		return bullets;

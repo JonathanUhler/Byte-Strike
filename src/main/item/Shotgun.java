@@ -20,14 +20,15 @@ public class Shotgun extends Weapon {
 	 * <li> Recoil 0.100 radians
 	 * <li> Mobility: 95% of normal walking speed
 	 * <li> Capacity: 2 rounds
+	 * <li> Bullets/Shot: 9
 	 * <li> Reload Time: 4.6 seconds
 	 * <li> Cost: $850
 	 * <li> $/Kill: $225
-	 * <li> Bullets/Shot: 9
+	 * <li> Barrel: 0.94 tiles
 	 * </ul>
 	 */
 	public Shotgun() {
-	    super(19, 0.40, 1, 1.5, 0.100, 0.95, 2, 4600, 850, 225, 9);
+	    super(19, 0.40, 1, 1.5, 0.100, 0.95, 2, 9, 4600, 850, 225, 0.94);
 	}
 
 

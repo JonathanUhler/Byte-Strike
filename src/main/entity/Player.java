@@ -168,17 +168,18 @@ public class Player extends Moveable {
 
 
     /**
-	 * Returns the type of the player. The type is defined by the following string:
-	 * <p>
-	 * {@code "Player" + weapon.getType()}
-	 * <p>
-	 * For example, {@code "PlayerRifle"} for a rifle.
+	 * Returns the type of the player. The type is either {@code "PlayerShort"} or
+	 * {@code "PlayerLong"} depending on the type of weapon being carried by the player.
 	 *
 	 * @return the type of the player.
 	 */
 	@Override
 	public String getType() {
-		return "Player" + this.weapon.getType();
+	    if (this.weapon instanceof Pistol ||
+			this.weapon instanceof SMG)
+			return "PlayerShort";
+		else // Most weapons will have the player holding at two locations, so this is the default
+			return "PlayerLong";
 	}
 
 }

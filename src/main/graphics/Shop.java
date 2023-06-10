@@ -48,7 +48,7 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 		int h = this.getSize().height;
 		int d = Math.min(w, h);
 
-		Weapon[] weapons = {new Rifle(), new Pistol(), new Shotgun(), new Sniper()};
+		Weapon[] weapons = {new Pistol(), new SMG(), new Rifle(), new Shotgun(), new Sniper()};
 
 		// Background
 		g.setColor(new Color(0, 0, 0, 175));

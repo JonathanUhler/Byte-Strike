@@ -335,8 +335,9 @@ public class GameView extends JPanel implements KeyListener,
 			}
 			Weapon weapon = null;
 			switch (weaponStr) {
-			case "Rifle" -> weapon = new Rifle();
 			case "Pistol" -> weapon = new Pistol();
+			case "SMG" -> weapon = new SMG();
+			case "Rifle" -> weapon = new Rifle();
 			case "Shotgun" -> weapon = new Shotgun();
 			case "Sniper" -> weapon = new Sniper();
 			default -> {
@@ -505,13 +506,11 @@ public class GameView extends JPanel implements KeyListener,
 				continue;
 			Point pLoc = this.getRelativeLocation(player.getX(), player.getY());
 			int ps = (int) (player.getSize() * tileSize);
-			SpriteLoader.drawEntity(g, player.getType(), pLoc.x, pLoc.y, ps, player.getRad());
+			SpriteLoader.drawPlayer(g, player, pLoc.x, pLoc.y, tileSize, player.getRad());
 		}
 		
 		// Draw the player
-		SpriteLoader.drawEntity(g, me.getType(),
-								playerPx.x, playerPx.y,
-								playerSize, this.getPlayerRotation());
+		SpriteLoader.drawPlayer(g, me, playerPx.x, playerPx.y, tileSize, this.getPlayerRotation());
 
 		// Draw the GUI overlay
 		g.setColor(new Color(70, 70, 70, 150));

@@ -229,8 +229,9 @@ public class Server extends JServer {
 			}
 			Weapon weapon = null;
 			switch (weaponStr) {
-			case "Rifle" -> weapon = new Rifle();
 			case "Pistol" -> weapon = new Pistol();
+			case "SMG" -> weapon = new SMG();
+			case "Rifle" -> weapon = new Rifle();
 			case "Shotgun" -> weapon = new Shotgun();
 			case "Sniper" -> weapon = new Sniper();
 			default -> {

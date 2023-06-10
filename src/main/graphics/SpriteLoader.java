@@ -2,6 +2,7 @@ package graphics;
 
 
 import world.Level.Tile;
+import entity.Player;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -10,6 +11,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.Point;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -160,7 +162,10 @@ public class SpriteLoader {
 
 
 	/**
-	 * Draws an entity. If the sprite cannot be loaded, the missing sprite texture is drawn.
+	 * Draws an entity (excluding the player). If the sprite cannot be loaded, the missing sprite 
+	 * texture is drawn. The player and weapon textures can be drawn with this method, but not
+	 * at once. For the player to be drawn with their weapon in the appropriate location, use
+	 * the {@code drawPlayer} method.
 	 *
 	 * @param g         the {@code Graphics} object to draw the entity on.
 	 * @param type      the type of entity to draw, as defined by the {@code getType} method of 
@@ -194,6 +199,50 @@ public class SpriteLoader {
 		gg.rotate(rad, centerX, centerY);
 		gg.drawImage(SpriteLoader.loadImage("entity/" + type, size), xPx, yPx, null);
 		gg.rotate(-rad, centerX, centerY);
+	}
+
+
+	private static Point weaponOffset(double rad, int tileSize) {
+		double x = 0.5 * Math.sin(-rad + Math.PI);
+		double y = -0.5 * Math.sin(-rad + Math.PI / 2);
+	    return new Point((int) (x * tileSize), (int) (y * tileSize));
+	}
+
+
+	public static void drawPlayer(Graphics g,
+								  Player player,
+								  int xPx,
+								  int yPx,
+								  int tileSize,
+								  double rad) {
+		if (g == null)
+			throw new NullPointerException("g was null");
+		if (player == null)
+			throw new NullPointerException("player was null");
+
+		Graphics2D gg = (Graphics2D) g;
+		int size = (int) (player.getSize() * tileSize);
+
+		rad += Math.PI / 2; // Because the rotate method does not know how the unit cricle works
+
+		int centerX = xPx + size / 2;
+		int centerY = yPx + size / 2;
+		String type = player.getType();
+		gg.rotate(rad, centerX, centerY);
+		gg.drawImage(SpriteLoader.loadImage("entity/" + type, size), xPx, yPx, null);
+		gg.rotate(-rad, centerX, centerY);
+
+		
+		String weaponType = player.getWeapon().getType();
+		Point weaponOffset = SpriteLoader.weaponOffset(rad, tileSize);
+		int weaponX = xPx + weaponOffset.x;
+		int weaponY = yPx + weaponOffset.y;
+		int weaponCenterX = weaponX + size / 2;
+		int weaponCenterY = weaponY + size / 2;
+		gg.rotate(rad, weaponCenterX, weaponCenterY);
+		gg.drawImage(SpriteLoader.loadImage("entity/" + weaponType, size),
+					 weaponX, weaponY, null);
+		gg.rotate(-rad, weaponCenterX, weaponCenterY);
 	}
 
 }

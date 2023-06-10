@@ -23,10 +23,11 @@ public class Sniper extends Weapon {
 	 * <li> Reload Time: 3.7 seconds
 	 * <li> Cost: $2500
 	 * <li> $/Kill: $25
+	 * <li> Barrel: 0.89 tiles
 	 * </ul>
 	 */
 	public Sniper() {
-		super(115, 0.90, 1, 1000.0, 0.300, 0.70, 1, 3700, 2500, 25);
+		super(115, 0.90, 1, 1000.0, 0.300, 0.70, 1, 3700, 2500, 25, 0.89);
 	}
 
 

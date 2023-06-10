@@ -23,10 +23,11 @@ public class Rifle extends Weapon {
 	 * <li> Reload Time: 3.1 seconds
 	 * <li> Cost: $1300
 	 * <li> $/Kill: $100
+	 * <li> Barrel: 0.9 tiles
 	 * </ul>
 	 */
 	public Rifle() {
-	    super(25, 0.60, 11, 7.0, 0.075, 0.80, 30, 3100, 1300, 100);
+	    super(25, 0.60, 11, 7.0, 0.075, 0.80, 30, 3100, 1300, 100, 0.9);
 	}
 
 
