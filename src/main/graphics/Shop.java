@@ -27,7 +27,7 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 
 	private Point lastMouseHover;
 	private Point lastMouseClick;
-	private Weapon lastPurchase;
+	private long lastPurchase;
 
 
 	public Shop() {
@@ -38,7 +38,7 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 		
 		this.lastMouseHover = new Point(-1, -1);
 		this.lastMouseClick = new Point(-1, -1);
-		this.lastPurchase = null;
+		this.lastPurchase = 0;
 	}
 	
 
@@ -96,11 +96,13 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 			// Check for purchase if the box was clicked
 			int lastClickX = (int) this.lastMouseClick.getX();
 			int lastClickY = (int) this.lastMouseClick.getY();
+			long purchaseTime = System.currentTimeMillis();
 			if (lastClickX > boxX && lastClickX < boxX + weaponBoxSize &&
 				lastClickY > weaponAreaY && lastClickY < weaponAreaY + weaponBoxSize &&
-				(this.lastPurchase == null || !weaponType.equals(this.lastPurchase.getType())))
+				purchaseTime - lastPurchase >= 500)
 			{
-				this.lastPurchase = weapon;
+				this.lastPurchase = purchaseTime;
+				this.lastMouseClick = new Point(-1, -1);
 				this.actionEvent(weapon);
 			}
 		}
