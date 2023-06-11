@@ -3,6 +3,7 @@ package graphics;
 
 import item.*;
 import interfaces.Weapon;
+import interfaces.Item;
 import server.Communication;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -48,7 +49,7 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 		int h = this.getSize().height;
 		int d = Math.min(w, h);
 
-		Weapon[] weapons = {new Pistol(), new SMG(), new Rifle(), new Shotgun(), new Sniper()};
+		Item[] items = {new Pistol(), new SMG(), new Rifle(), new Shotgun(), new Sniper(), new Armor()};
 
 		// Background
 		g.setColor(new Color(0, 0, 0, 150));
@@ -62,48 +63,71 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 		int titleWidth = g.getFontMetrics().stringWidth(title);
 		g.drawString(title, (w - titleWidth) / 2, titleFontSize);
 
-		// Weapons
+		// Items
 		int margin = (int) (d * 0.025);
-		int weaponAreaX = margin * 2;
-		int weaponAreaY = margin + titleFontSize;
-		int weaponAreaW = w - 2 * margin;
-		int weaponAreaH = h - 2 * margin - titleFontSize;
+		int itemAreaX = margin * 2;
+		int itemAreaY = margin * 2 + titleFontSize;
+		int itemAreaW = w - 2 * margin;
+		int itemAreaH = h - 3 * margin - titleFontSize;
+		double whRatio = (double) itemAreaW / itemAreaH;
+		int numBoxes = items.length;
 
-	    int weaponBoxSize = (weaponAreaW - (weapons.length - 1) * margin) / weapons.length;
-		for (int i = 0; i < weapons.length; i++) {
-			// Get weapon information
-			Weapon weapon = weapons[i];
-			String weaponType = weapon.getType();
+		// Calculate size and positioning of the items
+		int boxSize = 0;
+		int itemRows = numBoxes;
+		int itemCols = numBoxes;
+		while (itemRows * itemCols > numBoxes) {
+			boxSize++;
+			int newItemCols = itemAreaW / boxSize;
+			int newItemRows = itemAreaH / boxSize;
+			if (newItemCols * newItemRows < numBoxes)
+				break;
+			itemCols = newItemCols;
+			itemRows = newItemRows;
+		}
+		boxSize -= margin;
 
-			// Display weapon information box
-			int lastHoverX = (int) this.lastMouseHover.getX();
-			int lastHoverY = (int) this.lastMouseHover.getY();
+		// Draw the item boxes
+		for (int r = 0; r < itemRows; r++) {
+			for (int c = 0; c < itemCols; c++) {
+				if (c + r * itemCols >= items.length)
+					continue;
 
-			int boxX = weaponAreaX + (i * weaponBoxSize) + (i - 1) * margin;
-			g.setFont(new Font("Arial", Font.PLAIN, titleFontSize / 3));
-			if (lastHoverX > boxX && lastHoverX < boxX + weaponBoxSize &&
-				lastHoverY > weaponAreaY && lastHoverY < weaponAreaY + weaponBoxSize)
-				g.setColor(new Color(113, 180, 209));
-			else
-				g.setColor(new Color(247, 245, 228));
-			g.drawRoundRect(boxX, weaponAreaY, weaponBoxSize, weaponBoxSize, 5, 5);
-			// Display weapon information
-			g.drawString(weaponType, boxX + margin / 2, weaponAreaY + titleFontSize / 3);
-			g.drawString("$" +weapon.cost(), boxX + margin / 2, weaponAreaY + 2*titleFontSize/3);
-			SpriteLoader.draw(g, "Shop/Shop" + weaponType,
-							  boxX, weaponAreaY + margin, weaponBoxSize);
+				// Get item information
+				Item item = items[c + r * itemCols];
+				String itemType = item.getType();
 
-			// Check for purchase if the box was clicked
-			int lastClickX = (int) this.lastMouseClick.getX();
-			int lastClickY = (int) this.lastMouseClick.getY();
-			long purchaseTime = System.currentTimeMillis();
-			if (lastClickX > boxX && lastClickX < boxX + weaponBoxSize &&
-				lastClickY > weaponAreaY && lastClickY < weaponAreaY + weaponBoxSize &&
-				purchaseTime - lastPurchase >= 500)
-			{
-				this.lastPurchase = purchaseTime;
-				this.lastMouseClick = new Point(-1, -1);
-				this.actionEvent(weapon);
+				// Display item information box
+				int lastHoverX = (int) this.lastMouseHover.getX();
+				int lastHoverY = (int) this.lastMouseHover.getY();
+
+				int boxX = itemAreaX + (c * boxSize) + (c - 1) * margin;
+				int boxY = itemAreaY + (r * boxSize) + (r - 1) * margin;
+				g.setFont(new Font("Arial", Font.PLAIN, titleFontSize / 3));
+				if (lastHoverX > boxX && lastHoverX < boxX + boxSize &&
+					lastHoverY > boxY && lastHoverY < boxY + boxSize)
+					g.setColor(new Color(113, 180, 209));
+				else
+					g.setColor(new Color(247, 245, 228));
+				g.drawRoundRect(boxX, boxY, boxSize, boxSize, 5, 5);
+				// Display item information
+				g.drawString(itemType, boxX + margin / 2, boxY + titleFontSize / 3);
+				g.drawString("$" + item.getCost(), boxX + margin/2, boxY + 2*titleFontSize/3);
+				SpriteLoader.draw(g, "Shop/Shop" + itemType,
+								  boxX, boxY + margin, boxSize);
+
+				// Check for purchase if the box was clicked
+				int lastClickX = (int) this.lastMouseClick.getX();
+				int lastClickY = (int) this.lastMouseClick.getY();
+				long purchaseTime = System.currentTimeMillis();
+				if (lastClickX > boxX && lastClickX < boxX + boxSize &&
+					lastClickY > boxY && lastClickY < boxY + boxSize &&
+					purchaseTime - lastPurchase >= 500)
+				{
+					this.lastPurchase = purchaseTime;
+					this.lastMouseClick = new Point(-1, -1);
+					this.actionEvent(item);
+				}
 			}
 		}
 	}
@@ -130,9 +154,9 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 	}
 
 	
-	private void actionEvent(Weapon weapon) {
+	private void actionEvent(Item item) {
 		// Create the command with the shop purchase information to send
-		Map<String, String> command = Communication.cmdBuy(weapon, 0);
+		Map<String, String> command = Communication.cmdBuy(item, 0);
 		String commandStr = Communication.serialize(command);
 
 	    // Notify all listeners of this pane that an adapter action was performed

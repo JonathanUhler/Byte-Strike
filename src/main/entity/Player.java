@@ -3,8 +3,11 @@ package entity;
 
 import interfaces.Moveable;
 import interfaces.Weapon;
+import interfaces.Item;
 import graphics.SoundManager;
 import item.*;
+import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -23,11 +26,14 @@ public class Player extends Moveable {
 	private int money;
 	/** The weapon this player has. */
 	private Weapon weapon;
+	/** The items carried by this player. */
+    private List<Item> items;
 	
 
 	/**
 	 * Constructs a new {@code Player} object. The health of all players is initially set
-	 * to {@code 100} and is in the range {@code (0, 100]}.
+	 * to {@code 100} and is in the range {@code (0, 100]}. Players start with $100, a
+	 * {@code Pistol}, and no armor or other usable items.
 	 *
 	 * @param x  the initial x position of this player.
 	 * @param y  the initial y position of this player.
@@ -40,6 +46,7 @@ public class Player extends Moveable {
 		this.health = 100;
 		this.money = 100;
 		this.weapon = new Pistol();
+		this.items = new ArrayList<>();
 	}
 
 
@@ -84,36 +91,25 @@ public class Player extends Moveable {
 
 
 	/**
+	 * Returns whether this player is wearing armor.
+	 *
+	 * @return whether this player is wearing armor.
+	 */
+	public boolean isArmored() {
+	    for (Item item : this.items)
+			if (item instanceof Armor)
+				return true;
+		return false;
+	}
+
+
+	/**
 	 * Reduces the player's health.
 	 *
 	 * @param damage  the amount to reduce from the player's health.
 	 */
 	public void damage(int damage) {
 		this.health -= damage;
-	}
-
-
-	/**
-	 * Attempts to buy a new weapon and returns the status of the purchase. If the
-	 * weapon was successfully purchased, this method will automatically reduce
-	 * the player's money and set their weapon. This method prevents buying the same
-	 * weapon that the player already has.
-	 *
-	 * @param weapon  the weapon to buy.
-	 *
-	 * @return whether the weapon was successfully purchased.
-	 */
-	public boolean buy(Weapon weapon) {
-		if (weapon.getType().equals(this.weapon.getType()))
-			return false;
-		
-		int cost = weapon.cost();
-		if (cost <= this.money) {
-			this.money -= cost;
-			this.weapon = weapon;
-			return true;
-		}
-		return false;
 	}
 
 
@@ -128,12 +124,50 @@ public class Player extends Moveable {
 
 
 	/**
-	 * Gives this player a specified weapon.
+	 * Attempts to buy a new item and returns the status of the purchase. If the
+	 * item was successfully purchased, this method will automatically reduce
+	 * the player's money and give them the item. This method prevents buying the same
+	 * weapon that the player already has, and prevents over-buying on other items.
 	 *
-	 * @param weapon  the weapon to give to this player.
+	 * @param item  the item to buy.
+	 *
+	 * @return whether the item was successfully purchased.
 	 */
-	public void setWeapon(Weapon weapon) {
-		this.weapon = weapon;
+	public boolean buy(Item item) {
+		// Prevent buying duplicate weapons
+		if (item.getType().equals(this.weapon.getType()))
+			return false;
+		// Prevent over-buying on items
+		if (this.items.size() >= 3)
+			return false;
+		
+		int cost = item.getCost();
+		if (cost <= this.money) {
+			this.money -= cost;
+			this.give(item);
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Gives this player an item. If the specified item is a {@code Weapon}, the player's
+	 * current weapon is replaced by the given weapon. Otherwise, the item is added to the
+	 * player's list of items.
+	 *
+	 * @param item  the item to give the player.
+	 *
+	 * @throws NullPointerException  if {@code item == null}.
+	 */
+	public void give(Item item) {
+		if (item == null)
+			throw new NullPointerException("item was null");
+		
+		if (item instanceof Weapon)
+		    this.weapon = (Weapon) item;
+		else
+			this.items.add(item);
 	}
 
 
@@ -146,8 +180,9 @@ public class Player extends Moveable {
 		this.lastWalked = System.currentTimeMillis();
 
 		this.health = 100;
-		this.money = 250;
+		this.money = 100;
 		this.weapon = new Pistol();
+		this.items = new ArrayList<>();
 		super.setV(0, 0);
 		super.setRad(0);
 	}

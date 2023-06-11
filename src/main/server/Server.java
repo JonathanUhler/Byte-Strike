@@ -11,6 +11,7 @@ import world.Level;
 import item.*;
 import graphics.Settings;
 import interfaces.Weapon;
+import interfaces.Item;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.Map;
@@ -83,7 +84,7 @@ public class Server extends JServer {
 		double bulletX = bullet.getX();
 		double bulletY = bullet.getY();
 		double bulletS = bullet.getSize();
-		int dmg = bullet.getScaledDamage();
+		int baseDmg = bullet.getScaledDamage();
 
 		double bulletCenterX = bulletX + bulletS / 2;
 		double bulletCenterY = bulletY + bulletS / 2;
@@ -95,6 +96,7 @@ public class Server extends JServer {
 			double playerX = player.getX();
 			double playerY = player.getY();
 			double playerS = player.getSize();
+			int dmg = player.isArmored() ? (int) (baseDmg * weapon.penetration()) : baseDmg;
 
 			if (bulletCenterX > playerX && bulletCenterX < playerX + playerS &&
 				bulletCenterY > playerY && bulletCenterY < playerY + playerS)
@@ -222,27 +224,28 @@ public class Server extends JServer {
 		    break;
 		}
 		case Communication.OPCODE_BUY: {
-		    String weaponStr = command.get(Communication.KEY_WEAPON);
-			if (weaponStr == null) {
-				Log.stdlog(Log.ERROR, "Server", "No weapon in buy command: " + command);
+		    String itemStr = command.get(Communication.KEY_ITEM);
+			if (itemStr == null) {
+				Log.stdlog(Log.ERROR, "Server", "No item in buy command: " + command);
 				return;
 			}
-			Weapon weapon = null;
-			switch (weaponStr) {
-			case "Pistol" -> weapon = new Pistol();
-			case "SMG" -> weapon = new SMG();
-			case "Rifle" -> weapon = new Rifle();
-			case "Shotgun" -> weapon = new Shotgun();
-			case "Sniper" -> weapon = new Sniper();
+			Item item = null;
+			switch (itemStr) {
+			case "Pistol" -> item = new Pistol();
+			case "SMG" -> item = new SMG();
+			case "Rifle" -> item = new Rifle();
+			case "Shotgun" -> item = new Shotgun();
+			case "Sniper" -> item = new Sniper();
+			case "Armor" -> item = new Armor();
 			default -> {
-				Log.stdlog(Log.ERROR, "Server", "invalid weapon bought: " + weaponStr);
+				Log.stdlog(Log.ERROR, "Server", "invalid item bought: " + itemStr);
 				return;
 			}
 			}
 
-			boolean bought = player.buy(weapon);
+			boolean bought = player.buy(item);
 			if (bought) {
-				Map<String, String> updateBuy = Communication.cmdBuy(weapon, playerId);
+				Map<String, String> updateBuy = Communication.cmdBuy(item, playerId);
 			    this.sendAll(Communication.serialize(updateBuy));
 			}
 			break;

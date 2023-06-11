@@ -253,6 +253,8 @@ public class SpriteLoader {
 		String type = player.getType();
 		gg.rotate(rad, centerX, centerY);
 		gg.drawImage(SpriteLoader.loadImage("entity/" + type, size), xPx, yPx, null);
+		if (player.isArmored())
+			gg.drawImage(SpriteLoader.loadImage("entity/Armor", size), xPx, yPx, null);
 		gg.rotate(-rad, centerX, centerY);
 
 		

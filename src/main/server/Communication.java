@@ -3,7 +3,7 @@ package server;
 
 import entity.Player;
 import entity.Bullet;
-import interfaces.Weapon;
+import interfaces.Item;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -60,8 +60,8 @@ public class Communication {
 	public static final String KEY_Y = "y";
 	/** Key indicating the rotation, in radians on the unit circle, of an entity. */
 	public static final String KEY_RAD = "rad";
-	/** Key indicating a type of weapon, as defined by {@code Weapon::getType()}. */
-	public static final String KEY_WEAPON = "weapon";
+	/** Key indicating a type of item, as defined by {@code Item::getType()}. */
+	public static final String KEY_ITEM = "item";
 	/** Key indicating the number of the current level being played on. */
 	public static final String KEY_LEVEL = "level";
 	/** Key indicating a numerical amount of damage. */
@@ -474,27 +474,27 @@ public class Communication {
 	 *   <td style="border: 1px solid black"> Identifies this command, always {@code buy}.
 	 *  </tr>
 	 *  <tr style="border: 1px solid black">
-	 *   <td style="border: 1px solid black"> {@code weapon}
-	 *   <td style="border: 1px solid black"> The string type of the weapon being purchased.
+	 *   <td style="border: 1px solid black"> {@code item}
+	 *   <td style="border: 1px solid black"> The string type of the item being purchased.
 	 *  </tr>
 	 *  <tr style="border: 1px solid black">
 	 *   <td style="border: 1px solid black"> {@code id}
-	 *   <td style="border: 1px solid black"> The UID of the player that bought the weapon. This
+	 *   <td style="border: 1px solid black"> The UID of the player that bought the item. This
 	 *                                        field is ignored for client to server communication,
-	 *                                        but is used when the server broadcasts the change
-	 *                                        in weapon to all other clients.
+	 *                                        but is used when the server broadcasts the new item
+	 *                                        to all other clients.
 	 *  </tr>
 	 * </table>
 	 *
-	 * @param weapon    the weapon purchased.
-	 * @param playerId  the UID of the player buying the weapon.
+	 * @param item      the item purchased.
+	 * @param playerId  the UID of the player buying the item.
 	 *
 	 * @return the command payload.
 	 */
-	public static Map<String, String> cmdBuy(Weapon weapon, int playerId) {
+	public static Map<String, String> cmdBuy(Item item, int playerId) {
 		Map<String, String> map = new HashMap<>();
 		map.put(Communication.KEY_OPCODE, Communication.OPCODE_BUY);
-		map.put(Communication.KEY_WEAPON, weapon.getType());
+		map.put(Communication.KEY_ITEM, item.getType());
 		map.put(Communication.KEY_ID, Integer.toString(playerId));
 		return map;
 	}

@@ -15,7 +15,7 @@ import java.awt.Point;
  *
  * @author Jonathan Uhler
  */
-public abstract class Weapon {
+public abstract class Weapon extends Item {
 
 	/** 
 	 * The delay, in milliseconds, until a recoil variation on the bullet's velocity will no 
@@ -47,8 +47,6 @@ public abstract class Weapon {
 	private int roundsPerShot;
 	/** The time, in milliseconds, to reload. */
 	private int reloadTime;
-	/** The cost to buy this weapon from the shop. */
-	private int cost;
 	/** The amount of money awarded to the attacking player using this weapon. .*/
 	private int moneyPerKill;
 	/** The length, in tiles, of the barrel. Used to determine bullet position. */
@@ -134,6 +132,8 @@ public abstract class Weapon {
 				  int moneyPerKill,
 				  double barrelLength)
 	{
+		super(cost);
+		
 		this.damage = damage;
 		this.velocity = velocity;
 		this.penetration = velocity + 0.1;
@@ -144,7 +144,6 @@ public abstract class Weapon {
 		this.capacity = capacity;
 		this.roundsPerShot = roundsPerShot;
 		this.reloadTime = reloadTime;
-		this.cost = cost;
 		this.moneyPerKill = moneyPerKill;
 		this.barrelLength = barrelLength;
 
@@ -233,16 +232,6 @@ public abstract class Weapon {
 	 */
 	public int capacity() {
 		return this.capacity;
-	}
-
-
-	/**
-	 * Returns the cost of this weapon.
-	 *
-	 * @return the cost of this weapon.
-	 */
-	public int cost() {
-		return this.cost;
 	}
 
 
@@ -434,17 +423,5 @@ public abstract class Weapon {
 		if (this.reloading())
 			this.reload();
 	}
-
-
-	/**
-	 * Returns the type of this object as a string. This can be any string, but is recommended
-	 * to be standardized by a specific {@code Weapon} child class.
-	 * <p>
-	 * This method is separate from the {@code toString}, which can be overriden as desired
-	 * by children.
-	 *
-	 * @return the type of this object as a string.
-	 */
-	public abstract String getType();
 
 }

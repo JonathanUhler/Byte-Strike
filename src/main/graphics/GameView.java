@@ -13,6 +13,7 @@ import entity.Bullet;
 import entity.Ray;
 import item.*;
 import interfaces.Weapon;
+import interfaces.Item;
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Dimension;
@@ -328,25 +329,26 @@ public class GameView extends JPanel implements KeyListener,
 				return;
 			}
 
-			String weaponStr = command.get(Communication.KEY_WEAPON);
-			if (weaponStr == null) {
-				Log.stdlog(Log.ERROR, "GameView", "No weapon in buy command: " + command);
+			String itemStr = command.get(Communication.KEY_ITEM);
+			if (itemStr == null) {
+				Log.stdlog(Log.ERROR, "GameView", "No item in buy command: " + command);
 				return;
 			}
-			Weapon weapon = null;
-			switch (weaponStr) {
-			case "Pistol" -> weapon = new Pistol();
-			case "SMG" -> weapon = new SMG();
-			case "Rifle" -> weapon = new Rifle();
-			case "Shotgun" -> weapon = new Shotgun();
-			case "Sniper" -> weapon = new Sniper();
+			Item item = null;
+			switch (itemStr) {
+			case "Pistol" -> item = new Pistol();
+			case "SMG" -> item = new SMG();
+			case "Rifle" -> item = new Rifle();
+			case "Shotgun" -> item = new Shotgun();
+			case "Sniper" -> item = new Sniper();
+			case "Armor" -> item = new Armor();
 			default -> {
-				Log.stdlog(Log.ERROR, "GameView", "invalid weapon bought: " + weaponStr);
+				Log.stdlog(Log.ERROR, "GameView", "invalid item bought: " + itemStr);
 				return;
 			}
 			}
 
-			player.buy(weapon);
+			player.buy(item);
 			break;
 		}
 		case Communication.OPCODE_PAY: {
