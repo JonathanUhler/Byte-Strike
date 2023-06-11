@@ -40,6 +40,8 @@ public class Communication {
 	public static final String OPCODE_BUY = "buy";
 	/** Value indicating the gifting of money to a player. */
 	public static final String OPCODE_PAY = "pay";
+	/** Value indicating the usage of an item. */
+	public static final String OPCODE_USE = "use";
 	/** Key indicating the type of command sent. */
 	public static final String KEY_OPCODE = "opcode";
 	/** Key indicating whether a player is attempting to move up. */
@@ -68,6 +70,8 @@ public class Communication {
 	public static final String KEY_DMG = "dmg";
 	/** Key indicating a numerical amount of money. */
 	public static final String KEY_MONEY = "money";
+	/** Key indicating the number of an item being used. */
+	public static final String KEY_ITEM_NUM = "item_num";
 
 
 	/**
@@ -533,6 +537,44 @@ public class Communication {
 		Map<String, String> map = new HashMap<>();
 		map.put(Communication.KEY_OPCODE, Communication.OPCODE_PAY);
 		map.put(Communication.KEY_MONEY, Integer.toString(money));
+		map.put(Communication.KEY_ID, Integer.toString(playerId));
+		return map;
+	}
+
+
+	/**
+	 * Generates the payload for an item usage command.
+	 * <p>
+	 * This command is comprised of the following components:
+	 * <table style="border: 1px solid black">
+	 *  <caption>{@code color} Command Payload</caption>
+	 *  <tr style="border: 1px solid black">
+	 *   <th style="border: 1px solid black"> Key
+	 *   <th style="border: 1px solid black"> Commentary
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code opcode}
+	 *   <td style="border: 1px solid black"> Identifies this command, always {@code use}.
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code item_num}
+	 *   <td style="border: 1px solid black"> The number of the item being used.
+	 *  </tr>
+	 *  <tr style="border: 1px solid black">
+	 *   <td style="border: 1px solid black"> {@code id}
+	 *   <td style="border: 1px solid black"> The UID of the player using the item.
+	 *  </tr>
+	 * </table>
+	 *
+	 * @param itemNum   the number key of the item being used.
+	 * @param playerId  the UID of the player using the item.
+	 *
+	 * @return the command payload.
+	 */
+	public static Map<String, String> cmdUse(int itemNum, int playerId) {
+	    Map<String, String> map = new HashMap<>();
+		map.put(Communication.KEY_OPCODE, Communication.OPCODE_USE);
+		map.put(Communication.KEY_ITEM_NUM, Integer.toString(itemNum));
 		map.put(Communication.KEY_ID, Integer.toString(playerId));
 		return map;
 	}

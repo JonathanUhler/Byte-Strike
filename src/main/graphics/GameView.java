@@ -342,6 +342,7 @@ public class GameView extends JPanel implements KeyListener,
 			case "Shotgun" -> item = new Shotgun();
 			case "Sniper" -> item = new Sniper();
 			case "Armor" -> item = new Armor();
+			case "HealthKit" -> item = new HealthKit();
 			default -> {
 				Log.stdlog(Log.ERROR, "GameView", "invalid item bought: " + itemStr);
 				return;
@@ -372,6 +373,27 @@ public class GameView extends JPanel implements KeyListener,
 
 			player.pay(money);
 			break;
+		}
+		case Communication.OPCODE_USE: {
+			int itemNum;
+			int playerId;
+
+			try {
+				itemNum = Integer.parseInt(command.get(Communication.KEY_ITEM_NUM));
+				playerId = Integer.parseInt(command.get(Communication.KEY_ID));
+			}
+			catch (Exception e) {
+				Log.stdlog(Log.ERROR, "GameView", "Can't parse use command: " + command + ", " + e);
+				return;
+			}
+
+			Player player = this.players.get(playerId);
+			if (player == null) {
+				Log.stdlog(Log.ERROR, "GameView", "invalid player id: " + playerId);
+				return;
+			}
+
+			player.use(itemNum);
 		}
 		default:
 			Log.stdlog(Log.ERROR, "GameView", "invalid opcode: " + opcode);
@@ -543,14 +565,22 @@ public class GameView extends JPanel implements KeyListener,
 		// Primary weapon
 		g.drawString("Weapon", (int) (10 * tileSize), (int) (tileSize * 0.4));
 		this.drawThickRoundRect(g, (int) (10 * tileSize), tileSize / 2, tileSize);
-		SpriteLoader.draw(g, "Shop/Shop" + myWeapon.getType(),
+		SpriteLoader.draw(g, "Shop/" + myWeapon.getType(),
 						  (int) (10 * tileSize), tileSize / 2, tileSize);
 		// Use item 1
 		g.drawString("Use Item 1", (int) (11.5 * tileSize), (int) (tileSize * 0.4));
 		this.drawThickRoundRect(g, (int) (11.5 * tileSize), tileSize / 2, tileSize);
+		Item item1 = me.getItem(1);
+		if (item1 != null)
+			SpriteLoader.draw(g, "Shop/" + item1.getType(),
+							  (int) (11.5 * tileSize), tileSize / 2, tileSize);
 		// Use item 2
 		g.drawString("Use Item 2", (int) (13 * tileSize), (int) (tileSize * 0.4));
 		this.drawThickRoundRect(g, (int) (13 * tileSize), tileSize / 2, tileSize);
+		Item item2 = me.getItem(2);
+		if (item2 != null)
+			SpriteLoader.draw(g, "Shop/" + item2.getType(),
+							  (int) (13 * tileSize), tileSize / 2, tileSize);
 
 		// Update shop size and position if being shown
 		if (this.showShop) {
@@ -642,6 +672,19 @@ public class GameView extends JPanel implements KeyListener,
 		case KeyEvent.VK_S -> this.movingDown = true;
 		case KeyEvent.VK_D -> this.movingRight = true;
 		case KeyEvent.VK_B -> this.showShop = !this.showShop;
+		case KeyEvent.VK_1,
+			KeyEvent.VK_2,
+			KeyEvent.VK_3,
+			KeyEvent.VK_4,
+			KeyEvent.VK_5,
+			KeyEvent.VK_6,
+			KeyEvent.VK_7,
+			KeyEvent.VK_8,
+			KeyEvent.VK_9 ->
+			{
+			    Map<String, String> cmdUse = Communication.cmdUse(e.getKeyCode() - 48, 0);
+				this.client.send(Communication.serialize(cmdUse));
+			}
 		}
 
 		if (this.showShop)

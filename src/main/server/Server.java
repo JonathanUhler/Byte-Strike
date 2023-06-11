@@ -237,6 +237,7 @@ public class Server extends JServer {
 			case "Shotgun" -> item = new Shotgun();
 			case "Sniper" -> item = new Sniper();
 			case "Armor" -> item = new Armor();
+			case "HealthKit" -> item = new HealthKit();
 			default -> {
 				Log.stdlog(Log.ERROR, "Server", "invalid item bought: " + itemStr);
 				return;
@@ -249,6 +250,23 @@ public class Server extends JServer {
 			    this.sendAll(Communication.serialize(updateBuy));
 			}
 			break;
+		}
+		case Communication.OPCODE_USE: {
+			int itemNum;
+
+			try {
+				itemNum = Integer.parseInt(command.get(Communication.KEY_ITEM_NUM));
+			}
+			catch (Exception e) {
+				Log.stdlog(Log.ERROR, "Server", "Can't parse use command: " + command + ", " + e);
+				return;
+			}
+
+			boolean used = player.use(itemNum);
+			if (used) {
+				Map<String, String> updateUse = Communication.cmdUse(itemNum, playerId);
+				this.sendAll(Communication.serialize(updateUse));
+			}
 		}
 		default:
 			Log.stdlog(Log.ERROR, "Server", "invalid opcode: " + opcode);
@@ -280,20 +298,20 @@ public class Server extends JServer {
 		this.ids.put(clientSocket, playerId);
 		this.players.put(playerId, player);
 
-		Map<String, String> command = Communication.cmdJoin(playerId,
+		Map<String, String> cmdJoin = Communication.cmdJoin(playerId,
 															player.getX(),
 															player.getY(),
 															this.level.toInteger());
-		this.sendAll(Communication.serialize(command));
+		this.sendAll(Communication.serialize(cmdJoin));
 
 		// Update this player with all other player positions
 		for (int existingId : this.players.keySet()) {
 			Player existingPlayer = this.players.get(existingId);
-			Map<String, String> update = Communication.cmdJoin(existingId,
-															   existingPlayer.getX(),
-															   existingPlayer.getY(),
-															   this.level.toInteger());
-			this.send(Communication.serialize(update), clientSocket);
+			Map<String, String> updateJoin = Communication.cmdJoin(existingId,
+																   existingPlayer.getX(),
+																   existingPlayer.getY(),
+																   this.level.toInteger());
+			this.send(Communication.serialize(updateJoin), clientSocket);
 		}
 
 		// Update this player will all the existing bullets
@@ -308,8 +326,9 @@ public class Server extends JServer {
 			}
 
 			// Send the bullet update command
-			Map<String, String> update = Communication.cmdNewBullet(existingBullet, 1, attackingId);
-			this.send(Communication.serialize(update), clientSocket);
+			Map<String, String> updateNewBullet = Communication.cmdNewBullet(existingBullet,
+																			 1, attackingId);
+			this.send(Communication.serialize(updateNewBullet), clientSocket);
 		}
 	}
 
@@ -323,8 +342,8 @@ public class Server extends JServer {
 		this.ids.remove(clientSocket);
 		this.players.remove(playerId);
 
-		Map<String, String> command = Communication.cmdLeave(playerId);
-	    this.sendAll(Communication.serialize(command));
+		Map<String, String> cmdLeave = Communication.cmdLeave(playerId);
+	    this.sendAll(Communication.serialize(cmdLeave));
 	}
 
 }

@@ -104,6 +104,34 @@ public class Player extends Moveable {
 
 
 	/**
+	 * Gets the specified item from the player's list of items. The {@code itemNum} is <b>not</b>
+	 * an index into the {@code items} list. Instead, it is the number of the usable item, which
+	 * excludes any armor that the player may have.
+	 * <p>
+	 * For instace, if the player has the items {@code [HealthKit, Armor, Grenade]}, then
+	 * {@code getItem(1)} will return the health kit and {@code getItem(2)} will return the
+	 * grenade. Any other value of {@code itemNum} will yield {@code null}.
+	 *
+	 * @param itemNum  the item number to get.
+	 *
+	 * @return the item corresponding to the specified item number, or {@code null} if that
+	 *         item number does not exist.
+	 */
+	public Item getItem(int itemNum) {
+		int current = 1;
+		for (Item item : this.items) {
+			if (item instanceof Armor)
+				continue;
+			
+			if (current == itemNum)
+				return item;
+			current++;
+		}
+		return null;
+	}
+
+
+	/**
 	 * Reduces the player's health.
 	 *
 	 * @param damage  the amount to reduce from the player's health.
@@ -138,7 +166,7 @@ public class Player extends Moveable {
 		if (item.getType().equals(this.weapon.getType()))
 			return false;
 		// Prevent over-buying on items
-		if (this.items.size() >= 3)
+		if (!(item instanceof Weapon) && this.items.size() >= 3)
 			return false;
 		
 		int cost = item.getCost();
@@ -168,6 +196,28 @@ public class Player extends Moveable {
 		    this.weapon = (Weapon) item;
 		else
 			this.items.add(item);
+	}
+
+
+	/**
+	 * Uses an item owned by this player. If the item is used successfully, the action
+	 * of the item is automatically performed and the item is taken away from the player.
+	 *
+	 * @param itemNum  the item number to use.
+	 *
+	 * @return whether the specified item was used.
+	 *
+	 * @see getItem
+	 */
+	public boolean use(int itemNum) {
+		Item item = this.getItem(itemNum);
+		if (item == null)
+			return false;
+
+		if (item instanceof HealthKit)
+			this.health = Math.min(this.health + 25, 100);
+		this.items.remove(item);
+		return true;
 	}
 
 
