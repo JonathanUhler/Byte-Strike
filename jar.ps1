@@ -1,10 +1,10 @@
-: Setup
+# Setup
 mkdir .\bin
 del -Recurse .\bin\*
 
-: Copy libraries
+# Copy libraries
 mkdir .\bin\lib
 copy .\src\lib\* .\bin\lib
 
-: Make jar
+# Make jar
 jar cmf 'manifest.mf' .\bin\ByteStrike.jar -C .\obj\ . -C .\src\ .\assets\
