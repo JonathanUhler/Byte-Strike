@@ -233,6 +233,7 @@ public class Player extends Moveable {
 		this.money = 100;
 		this.weapon = new Pistol();
 		this.items = new ArrayList<>();
+		
 		super.setV(0, 0);
 		super.setRad(0);
 	}
