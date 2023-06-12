@@ -554,7 +554,7 @@ public class GameView extends JPanel implements KeyListener,
 		g.drawString("+ " + me.getHealth(), (int) (tileSize * 0.75), (int) (tileSize * 1.35));
 		// Ammo
 		this.drawThickRoundRect(g, 4 * tileSize, tileSize / 2, tileSize);
-		g.drawString("* " + me.getWeapon().bulletsLeft() + "/" + me.getWeapon().capacity(),
+		g.drawString("⁍ " + me.getWeapon().bulletsLeft() + "/" + me.getWeapon().capacity(),
 					 (int) (tileSize * 4.25), (int) (tileSize * 1.35));
 		// Money
 		this.drawThickRoundRect(g, (int) ((wTiles - 3.25) * tileSize), tileSize / 2, tileSize);
