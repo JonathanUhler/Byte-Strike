@@ -1,5 +1,5 @@
 # Setup
-mkdir .\obj
+mkdir -force .\obj
 del -recurse .\obj\*
 
 # Compile

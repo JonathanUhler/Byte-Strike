@@ -1,9 +1,9 @@
 # Setup
-mkdir .\bin
+mkdir -force .\bin
 del -Recurse .\bin\*
 
 # Copy libraries
-mkdir .\bin\lib
+mkdir -force .\bin\lib
 copy .\src\lib\* .\bin\lib
 
 # Make jar
