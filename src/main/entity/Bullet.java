@@ -91,7 +91,7 @@ public class Bullet extends Moveable {
 	/**
 	 * Returns the type of this bullet. The type is defined by the following string:
 	 * <p>
-	 * {@code "Bullet" + origin.getType()}
+	 * {@code "Bullet" + getWeaponType()}
 	 * <p>
 	 * For example, {@code "BulletRifle"} for a rifle.
 	 *

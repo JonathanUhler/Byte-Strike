@@ -50,7 +50,7 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 		int d = Math.min(w, h);
 
 		Item[] items = {new Pistol(), new SMG(), new Rifle(), new Shotgun(), new Sniper(),
-						new Armor(), new HealthKit()};
+						new Armor(), new HealthKit(), new Grenade()};
 
 		// Background
 		g.setColor(new Color(0, 0, 0, 150));
@@ -88,6 +88,12 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 		}
 		boxSize -= margin;
 
+		// Calculate margin to center all the boxes vertically and horizontally
+		int totalBoxesW = (boxSize + margin) * itemCols;
+		int totalBoxesH = (boxSize + margin) * itemRows;
+		int boxesMarginHoriz = (itemAreaW - totalBoxesW + margin) / 2;
+		int boxesMarginVert = (itemAreaH - totalBoxesH + margin) / 2;
+
 		// Draw the item boxes
 		for (int r = 0; r < itemRows; r++) {
 			for (int c = 0; c < itemCols; c++) {
@@ -102,8 +108,8 @@ public class Shop extends JComponent implements MouseListener, MouseMotionListen
 				int lastHoverX = (int) this.lastMouseHover.getX();
 				int lastHoverY = (int) this.lastMouseHover.getY();
 
-				int boxX = itemAreaX + (c * boxSize) + (c - 1) * margin;
-				int boxY = itemAreaY + (r * boxSize) + (r - 1) * margin;
+				int boxX = itemAreaX + (c * boxSize) + (c - 1) * margin + boxesMarginHoriz;
+				int boxY = itemAreaY + (r * boxSize) + (r - 1) * margin + boxesMarginVert;
 				g.setFont(new Font("Arial", Font.PLAIN, titleFontSize / 3));
 				if (lastHoverX > boxX && lastHoverX < boxX + boxSize &&
 					lastHoverY > boxY && lastHoverY < boxY + boxSize)

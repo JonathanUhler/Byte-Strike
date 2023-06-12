@@ -343,6 +343,7 @@ public class GameView extends JPanel implements KeyListener,
 			case "Sniper" -> item = new Sniper();
 			case "Armor" -> item = new Armor();
 			case "HealthKit" -> item = new HealthKit();
+			case "Grenade" -> item = new Grenade();
 			default -> {
 				Log.stdlog(Log.ERROR, "GameView", "invalid item bought: " + itemStr);
 				return;
